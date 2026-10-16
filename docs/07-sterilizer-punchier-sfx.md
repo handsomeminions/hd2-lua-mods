@@ -1,6 +1,6 @@
 > **[TX-41 灭菌器 → 开火音效替换（实验性）](09-sterilizer-punchier-sfx.md)**　v1.0.0
 >
-> [← 返回总览](../README.md) · [全部 Mod 一览](../README.md#-全部-mod-一览)
+> [← 返回总览](../README.md) · [全部 Mod 一览](../README.md#-全部-mod-一览7-个)
 >
 > **安装包** [`dist/Sterilizer-PunchierSFX.zip`](../dist/Sterilizer-PunchierSFX.zip)　·　**源码** [`src/sterilizer_sfx.lua`](../src/sterilizer_sfx.lua)　·　**离线测试** `analysis/test_sterilizer_sfx.py`（16/16）
 >

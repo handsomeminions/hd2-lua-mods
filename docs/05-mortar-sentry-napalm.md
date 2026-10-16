@@ -1,6 +1,6 @@
 > **[A/M-12 迫击哨戒炮 → 轨道凝固汽油弹效果](07-mortar-sentry-napalm.md)**　v1.0.1
 >
-> [← 返回总览](../README.md) · [全部 Mod 一览](../README.md#-全部-mod-一览)
+> [← 返回总览](../README.md) · [全部 Mod 一览](../README.md#-全部-mod-一览7-个)
 >
 > **安装包** [`dist/MortarSentry-NapalmImpact.zip`](../dist/MortarSentry-NapalmImpact.zip)　·　**源码** [`src/mortar_sentry_napalm.lua`](../src/mortar_sentry_napalm.lua)　·　**离线测试** `analysis/test_mortar_napalm.py`（23/23）
 >

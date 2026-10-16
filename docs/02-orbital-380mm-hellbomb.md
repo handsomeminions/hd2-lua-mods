@@ -1,6 +1,6 @@
 > **[轨道380MM高爆弹火力网 → 地狱火炸弹](02-orbital-380mm-hellbomb.md)**　v1.0.1
 >
-> [← 返回总览](../README.md) · [全部 Mod 一览](../README.md#-全部-mod-一览)
+> [← 返回总览](../README.md) · [全部 Mod 一览](../README.md#-全部-mod-一览7-个)
 >
 > **安装包** [`dist/Orbital380mm-Hellbomb.zip`](../dist/Orbital380mm-Hellbomb.zip)　·　**源码** [`src/orbital_380mm_hellbomb.lua`](../src/orbital_380mm_hellbomb.lua)　·　**离线测试** `analysis/test_380mm.py`（7/7）
 >

@@ -1,6 +1,6 @@
 > **[轨道120MM高爆弹火力网 → 飞鹰500kg（仅爆炸）](01-orbital-120mm-eagle-500kg.md)**　v1.3.0
 >
-> [← 返回总览](../README.md) · [全部 Mod 一览](../README.md#-全部-mod-一览)
+> [← 返回总览](../README.md) · [全部 Mod 一览](../README.md#-全部-mod-一览7-个)
 >
 > **安装包** [`dist/Orbital120mm-Eagle500kg.zip`](../dist/Orbital120mm-Eagle500kg.zip)　·　**源码** [`src/orbital_120mm_500kg.lua`](../src/orbital_120mm_500kg.lua)　·　**离线测试** `analysis/test_addon.py`（25/25）
 >

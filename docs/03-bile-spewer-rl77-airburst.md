@@ -1,6 +1,6 @@
 > **[胆汁喷涌虫 · 胆汁迫击炮 → 落地炸成 RL-77 空爆集束](03-bile-spewer-rl77-airburst.md)**　v1.5.0
 >
-> [← 返回总览](../README.md) · [全部 Mod 一览](../README.md#-全部-mod-一览)
+> [← 返回总览](../README.md) · [全部 Mod 一览](../README.md#-全部-mod-一览7-个)
 >
 > **安装包** [`dist/BileSpewer-RL77Airburst.zip`](../dist/BileSpewer-RL77Airburst.zip)　·　**源码** [`src/bug_artillery_airburst.lua`](../src/bug_artillery_airburst.lua)　·　**离线测试** `analysis/test_bug_artillery.py`（28/28）
 >

@@ -4,8 +4,8 @@
 
 **《绝地潜兵2》Lua 注入型内存 Mod 合集 —— 下载即用 · 不改游戏文件 · 源码与测试全公开**
 
-[![Loader](https://img.shields.io/badge/Bingus%20Shared%20Loader-v15%2B%20(API%201)-blue)](#-前置要求)
-[![Mods](https://img.shields.io/badge/mods-7-brightgreen)](#-全部-mod-一览)
+[![Loader](https://img.shields.io/badge/Bingus%20Shared%20Loader-v15%2B%20(API%201)-blue)](#1-前置要求)
+[![Mods](https://img.shields.io/badge/mods-7-brightgreen)](#-全部-mod-一览7-个)
 [![Tests](https://img.shields.io/badge/offline%20tests-127%20passing-success)](#-离线测试)
 [![License](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
 

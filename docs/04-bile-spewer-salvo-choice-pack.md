@@ -1,6 +1,6 @@
 > **[胆汁喷涌虫 · 齐射档位选择（合集包：4 团 / 6 团）](06-bile-spewer-salvo-choice-pack.md)**　v1.0.0
 >
-> [← 返回总览](../README.md) · [全部 Mod 一览](../README.md#-全部-mod-一览)
+> [← 返回总览](../README.md) · [全部 Mod 一览](../README.md#-全部-mod-一览7-个)
 >
 > **安装包** [`dist/BileSpewer-Salvo-Choice.zip`](../dist/BileSpewer-Salvo-Choice.zip)　·　**源码** [`src/bug_artillery_6rounds.lua`](../src/bug_artillery_6rounds.lua) + [`src/bug_artillery_4rounds.lua`](../src/bug_artillery_4rounds.lua)　·　**离线测试** `analysis/test_package_bug_salvo.py`（结构+共存）
 >

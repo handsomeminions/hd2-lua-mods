@@ -1,6 +1,6 @@
 > **[TX-41 灭菌器 → G-4 伤害 + 毒气施加量 ×2](08-sterilizer-g4-gas-damage.md)**　v2.0.0
 >
-> [← 返回总览](../README.md) · [全部 Mod 一览](../README.md#-全部-mod-一览)
+> [← 返回总览](../README.md) · [全部 Mod 一览](../README.md#-全部-mod-一览7-个)
 >
 > **安装包** [`dist/Sterilizer-G4GasDamage.zip`](../dist/Sterilizer-G4GasDamage.zip)　·　**源码** [`src/sterilizer_gas_damage.lua`](../src/sterilizer_gas_damage.lua)　·　**离线测试** `analysis/test_sterilizer_gas_damage.py`（28/28）
 >
