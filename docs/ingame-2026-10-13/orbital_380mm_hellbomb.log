@@ -1,0 +1,7 @@
+[frame 1] addon started revision 1.0.1; loader API 1 v17
+[frame 133] region enum done: 5961 regions (4743 data-first, 1218 image last)
+[frame 375] resolved Hellbomb ExplosionType = 242 via block@0x1BFF4280004 idx#195 audio=1160336653 radii=17/25/45 (1 cand)
+[frame 375] PATCHED 380mm projectile type 80 @0x1BFF42A92CC explosion->Hellbomb(242)
+[frame 375] PATCHED 380mm projectile type 266 @0x1BFF42A981C explosion->Hellbomb(242)
+[frame 3180] pass 1 done: scanned 3427.3 MB, 2 copies, hellbomb=242
+[frame 3180] LDLD types seen: 0xF192DD51 x6, 0xF6CB7F28 x40, 0x6C613D21 x210, 0xA212489E x1, 0x248CC2D1 x1, 0x82E72346 x1, 0x683E604F x1, 0x857AC132 x1, 0xDF49ED80 x4, 0x56E1C594 x1, 0x40ECAA07 x1, 0xE5A620DD x11, 0x1E604234 x9, 0xC5085606 x1, 0xE0F572E3 x1, 0x63CE0FEB x32, 0x79400A27 x1, 0xD9A55AA0 x411, 0xF8F9EC3E x132, 0x7528E477 x1, 0xE0A72CF0 x1, 0x7BB38A25 x42, 0xB8AD4F39 x369, 0xFBD8E5C0 x1, 0xDCEA3AEF x15, 0x786F17CE x1, 0xDE8193C0 x1, 0xAFDF0267 x1, 0x30EB6399 x11, 0x06F9ABD0 x1, 0xC63E0B22 x1, 0x63E1DBE8 x7, 0xD6A11545 x1641, 0xA2BA274A x12, 0x2AEA2592 x1, 0xBD4042C2 x1, 0x9BF3BB9D x13, 0x49795156 x1, 0x3C29C0FF x1, 0x08C2B982 x438, 0xFB45E243 x1, 0x226555C8 x6

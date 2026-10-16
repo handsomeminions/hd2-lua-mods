@@ -1,0 +1,12 @@
+OK - patch applied (revision 1.0.1): Orbital 380mm HE Barrage strikes now explode like Hellbombs
+mod=mods/hd2/orbital_380mm_hellbomb revision=1.0.1
+phase=patched frames=9000
+loader_api=1 loader_version=17
+scan_pass=1 region=125/5961 scanned_mb=5262.8
+hellbomb_explosion_type=242 src=block@0x1BFF4280004 idx#195 audio=1160336653 radii=17/25/45 (1 cand)
+patched_records=2
+ldld_types=0xD6A11545:1641 0x68E17506:655 0x08C2B982:438 0xD9A55AA0:411 0xB8AD4F39:369 0x6C613D21:210 0xF8F9EC3E:132 0x221E024D:90
+  copy1: rec@0x1BFF42A92CC off+144
+  copy2: rec@0x1BFF42A981C off+144
+effect: Orbital 380mm HE Barrage strikes explode like a Hellbomb
+note: 380mm shells are SHARED with the Walking Barrage; both change. Host-side needed for damage

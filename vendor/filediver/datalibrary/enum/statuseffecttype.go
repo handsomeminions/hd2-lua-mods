@@ -1,0 +1,81 @@
+package enum
+
+type StatusEffectType uint32
+
+const (
+	StatusEffectType_None StatusEffectType = iota
+	StatusEffectType_Blind
+	StatusEffectType_Bleed
+	StatusEffectType_Deaf
+	StatusEffectType_Confusion
+	StatusEffectType_Fire
+	StatusEffectType_Value_6_Len_27
+	StatusEffectType_Value_7_Len_21
+	StatusEffectType_Slowed
+	StatusEffectType_Rooted
+	StatusEffectType_Acid_Splash
+	StatusEffectType_Acid_Stream
+	StatusEffectType_Thermite
+	StatusEffectType_Cyborg_Fire
+	StatusEffectType_Value_14_Len_23
+	StatusEffectType_Sand
+	StatusEffectType_Mud
+	StatusEffectType_Snow
+	StatusEffectType_Submerged
+	StatusEffectType_Thornbush
+	StatusEffectType_Value_20_Len_23
+	StatusEffectType_Barbwire
+	StatusEffectType_BushSmall
+	StatusEffectType_BushLarge
+	StatusEffectType_Pure_Damage
+	StatusEffectType_Value_25_Len_23
+	StatusEffectType_StimStamina
+	StatusEffectType_StimHeal
+	StatusEffectType_DownedStimHeal
+	StatusEffectType_DownedStimVisual
+	StatusEffectType_StimCooldown
+	StatusEffectType_BurningHeavy
+	StatusEffectType_RadiationLight
+	StatusEffectType_RadiationHeavy
+	StatusEffectType_Electric
+	StatusEffectType_Hidden
+	StatusEffectType_StunSmall
+	StatusEffectType_StunMedium
+	StatusEffectType_StunLarge
+	StatusEffectType_StunMassive
+	StatusEffectType_StunIlluminate
+	StatusEffectType_Gas
+	StatusEffectType_Value_42_Len_26
+	StatusEffectType_Value_43_Len_30
+	StatusEffectType_Value_44_Len_36
+	StatusEffectType_Value_45_Len_36
+	StatusEffectType_Flashlighted
+	StatusEffectType_Smoke_Covered
+	StatusEffectType_BackpackChemicals
+	StatusEffectType_IntenseHeat
+	StatusEffectType_ExtremeCold
+	StatusEffectType_Value_51_Len_23
+	StatusEffectType_Value_52_Len_26
+	StatusEffectType_Value_53_Len_26
+	StatusEffectType_Value_54_Len_26
+	StatusEffectType_Value_55_Len_25
+	StatusEffectType_Value_56_Len_26
+	StatusEffectType_Value_57_Len_26
+	StatusEffectType_Value_58_Len_26
+	StatusEffectType_Value_59_Len_27
+	StatusEffectType_Value_60_Len_34
+	StatusEffectType_Value_61_Len_36
+	StatusEffectType_Value_62_Len_36
+	StatusEffectType_Value_63_Len_36
+	StatusEffectType_Value_64_Len_29
+	StatusEffectType_Value_65_Len_45
+	StatusEffectType_Value_66_Len_36
+	StatusEffectType_Value_67_Len_25
+	StatusEffectType_Count
+)
+
+func (p StatusEffectType) MarshalText() ([]byte, error) {
+	return []byte(p.String()), nil
+}
+
+//go:generate go run golang.org/x/tools/cmd/stringer -type=StatusEffectType

@@ -1,0 +1,37 @@
+# ============================================================================
+# HD2 Lua Mods —— 提交体积控制
+#
+# 下面这两个目录/文件是**可复现的大体积离线数据**（合计约 285 MB），
+# 从 GitHub 拉下来的人跑一次 `python vendor/restore.py` 就能还原。
+# 它们的压缩替补都已提交在本仓库里：
+#   vendor/community/data/                 241 MB  <- vendor/community-data.zip   (7.9 MB)
+#   analysis/ref/generated_entities.dl_bin  44 MB  <- vendor/filediver/datalibrary/generated_entities.dl_bin.gz (0.9 MB)
+# ============================================================================
+/vendor/community/data/
+/analysis/ref/generated_entities.dl_bin
+
+# 临时 / 中间产物（构建时生成，且已在别处留档）
+/build/
+/tmp/
+/_scratch/
+
+# 未单独发布的独立档位包 —— 4 团 / 6 团已整合进 BileSpewer-Salvo-Choice.zip，
+# 对外只发布合集包（用户 2026-10-16 决定）。源码与打包脚本仍在，可随时重建：
+#   python analysis/build_package_bug_6rounds.py
+#   python analysis/build_package_bug_4rounds.py
+/dist/BileSpewer-6Mortars.zip
+/dist/BileSpewer-4Mortars.zip
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+*.swp
+*~

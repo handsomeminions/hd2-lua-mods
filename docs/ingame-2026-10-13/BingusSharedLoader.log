@@ -1,0 +1,28 @@
+Bingus Shared Loader loader-v19; API 1
+Started: 2026-10-13 16:08:37
+Game build stamps: executable 6AB382E4, game.dll 6AB3B43F
+Lua at start: heap 435 KB, GC pause 200, GC step multiplier 20, JIT on
+Previous session: started 2026-10-13 15:22:56 (loader-v19); startup finished: 2 loaded, 0 failed
+Newest crash dump: 2026-09-02 22:19:43, exception 0xC0000005 at helldivers2.exe+0xDE9400 (module stamp 6A85C636), executable stamp 6A85C636; 9 dumps in total
+Newest GPU crash report: 2026-08-14 20:30:47
+Discovery: 2 declared entries
+LuaJIT cache: expanded 65536 KB / 8000 traces; flushes 0, growth 0; watcher on
+mods/cowboybingus/vanilla_plus_megapack: not installed
+mods/cowboybingus/better_stratagem_bounce: not installed
+mods/cowboybingus/hellpod_steering_unlocked: not installed
+mods/cowboybingus/wide_angle_stratagems: not installed
+mods/cowboybingus/reinforcement_beacon_fix_data: not installed
+mods/cowboybingus/consistent_vaulting: not installed
+mods/cowboybingus/shallow_water_dive: not installed
+mods/cowboybingus/sentry_aim_retention: not installed
+mods/cowboybingus/corpse_collision_repair: not installed
+mods/cowboybingus/vehicle_stability: not installed
+mods/cowboybingus/hover_pack_cancel: not installed
+mods/cowboybingus/enemy_intelligence: not installed
+mods/codex/gun_calibration: not installed
+mods/cowboybingus/armory_preview_cache: not installed
+mods/hd2/orbital_380mm_hellbomb: loaded
+  changes: heap +76 KB, 1 ms; added _HD2_380MM_FLUSH, _HD2_ORBITAL_380MM_HELLBOMB; replaced update
+mods/hd2/orbital_120mm_500kg: loaded
+  changes: heap +106 KB, 2 ms; added _HD2_120MM_FLUSH, _HD2_ORBITAL_120MM_500KG; replaced update
+Startup finished: 2 loaded, 0 failed

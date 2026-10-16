@@ -1,0 +1,39 @@
+MIT License
+
+Copyright (c) 2026 HD2 Lua Mods contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+--------------------------------------------------------------------------
+NOTE ON THIRD-PARTY DATA (see vendor/)
+
+This repository bundles, for offline reverse-engineering convenience, several
+third-party artifacts that are NOT covered by the MIT license above:
+
+  * vendor/filediver/       - FileDiver data-library dumps (xypwn/filediver)
+  * vendor/community/       - community-decoded game data (shalzuth/HelldiversData)
+  * vendor/hd2-lua-mod/     - the "hd2-lua-mod" skill package
+  * vendor/ref/             - typelib dumps generated from the game's own type library
+
+They remain the property of their respective authors and are included only as
+research tooling. No game assets, audio, models or textures are redistributed.
+
+This project contains NO game code, assets or binaries. Every delivered mod is
+a runtime, in-memory Lua addon that reads/writes the live process of a locally
+installed copy of the game. Nothing here modifies any file on disk.

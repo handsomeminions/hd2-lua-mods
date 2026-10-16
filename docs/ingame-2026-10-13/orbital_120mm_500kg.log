@@ -1,0 +1,7 @@
+[frame 1] addon started revision 1.2.1; loader API 1 v17
+[frame 135] region enum done: 5965 regions (4747 data-first, 1218 image last)
+[frame 414] resolved 500kg ProjectileType = 239 via block@0x1BFF42A0004 form=mem rec#12 (mass=500 cal=50 speed=500)
+[frame 414] CLONED 120mm projectile type 194 @0x1BFF42A8F9C -> 500kg bomb
+[frame 414] CLONED 120mm projectile type 137 @0x1BFF42A90AC -> 500kg bomb
+[frame 3186] pass 1 done: scanned 3443.6 MB, 0 bombard/ 1 proj blocks, 2 copies, 0 fp-candidates
+[frame 3186] LDLD types seen: 0xBD4042C2 x1 (PROJECTILE)

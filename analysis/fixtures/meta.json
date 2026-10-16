@@ -1,0 +1,11 @@
+{
+ "bomb_type": 239,
+ "target_index": 18,
+ "buckets": 44,
+ "records": 23,
+ "stride": 192,
+ "proj_count": 350,
+ "proj_stride": 272,
+ "proj_size": 95216,
+ "bomb_size": 5120
+}

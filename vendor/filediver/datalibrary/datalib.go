@@ -1,0 +1,851 @@
+package datalib
+
+import (
+	"bufio"
+	"bytes"
+	_ "embed"
+	"encoding/binary"
+	"encoding/hex"
+	"encoding/json"
+	"io"
+	"math"
+	"slices"
+	"strconv"
+	"strings"
+	"sync"
+
+	"github.com/klauspost/compress/gzip"
+	"github.com/xypwn/filediver/hashes"
+	"github.com/xypwn/filediver/stingray"
+	"github.com/xypwn/filediver/util"
+)
+
+//go:embed generated_arc_settings.dl_bin.gz
+var arcSettingsCompressed []byte
+var arcSettings []byte
+
+//go:embed generated_animation_event_trigger_settings.dl_bin.gz
+var animationEventTriggerSettingsCompressed []byte
+var animationEventTriggerSettings []byte
+
+//go:embed generated_beam_settings.dl_bin.gz
+var beamSettingsCompressed []byte
+var beamSettings []byte
+
+//go:embed generated_damage_settings.dl_bin.gz
+var damageSettingsCompressed []byte
+var damageSettings []byte
+
+//go:embed generated_planet_data.dl_bin.gz
+var planetDataCompressed []byte
+var planetData []byte
+
+//go:embed generated_planet_override_settings.dl_bin.gz
+var planetOverrideSettingsCompressed []byte
+var planetOverrideSettings []byte
+
+//go:embed generated_planet_region_settings.dl_bin.gz
+var planetRegionSettingsCompressed []byte
+var planetRegionSettings []byte
+
+//go:embed generated_planet_types_settings.dl_bin.gz
+var planetTypesSettingsCompressed []byte
+var planetTypesSettings []byte
+
+//go:embed generated_region_settings.dl_bin.gz
+var regionSettingsCompressed []byte
+var regionSettings []byte
+
+//go:embed generated_sky_settings.dl_bin.gz
+var skySettingsCompressed []byte
+var skySettings []byte
+
+//go:embed generated_projectile_settings.dl_bin.gz
+var projectileSettingsCompressed []byte
+var projectileSettings []byte
+
+//go:embed generated_environment_settings.dl_bin.gz
+var environmentSettingsCompressed []byte
+var environmentSettings []byte
+
+//go:embed generated_explosion_settings.dl_bin.gz
+var explosionSettingsCompressed []byte
+var explosionSettings []byte
+
+//go:embed generated_customization_armor_sets.dl_bin.gz
+var customizationArmorSetsCompressed []byte
+var customizationArmorSets []byte
+
+//go:embed generated_customization_passive_bonuses.dl_bin.gz
+var customizationPassiveBonusesCompressed []byte
+var customizationPassiveBonuses []byte
+
+//go:embed generated_unit_customization_settings.dl_bin.gz
+var unitCustomizationSettingsCompressed []byte
+var unitCustomizationSettings []byte
+
+//go:embed generated_weapon_customization_settings.dl_bin.gz
+var weaponCustomizationSettingsCompressed []byte
+var weaponCustomizationSettings []byte
+
+//go:embed generated_entities.dl_bin.gz
+var entitiesCompressed []byte
+var entities []byte
+
+//go:embed generated_entity_deltas.dl_bin.gz
+var entityDeltasCompressed []byte
+var entityDeltas []byte
+
+//go:embed generated_zone_data.dl_bin.gz
+var zoneSettingsCompressed []byte
+var zoneSettings []byte
+
+//go:embed dl_library.dl_typelib.gz
+var typelibCompressed []byte
+var typelib []byte
+
+var DLHashesToStrings map[DLHash]string
+
+func init() {
+	var wg sync.WaitGroup
+	goDecompress := func(dst *[]byte, src []byte) {
+		wg.Add(1)
+		go func() {
+			r, err := gzip.NewReader(bytes.NewReader(src))
+			if err != nil {
+				panic(err) // this shouldn't fail, as the data is compile-time generated
+			}
+			*dst, err = io.ReadAll(r)
+			if err != nil {
+				panic(err) // this shouldn't fail, as the data is compile-time generated
+			}
+			wg.Done()
+		}()
+	}
+
+	goParseHashes := func() {
+		wg.Add(1)
+		go func() {
+			DLHashesToStrings = make(map[DLHash]string)
+			sc := bufio.NewScanner(strings.NewReader(hashes.DLTypeNames))
+			for sc.Scan() {
+				text := strings.TrimSpace(sc.Text())
+				if text == "" || strings.HasPrefix(text, "//") {
+					continue
+				}
+				DLHashesToStrings[Sum(text)] = text
+			}
+			wg.Done()
+		}()
+	}
+
+	//start := time.Now()
+
+	// Decompress in parallel.
+	// Reduces binary size by ~33MB.
+	goDecompress(&entities, entitiesCompressed)
+	goDecompress(&entityDeltas, entityDeltasCompressed)
+	goDecompress(&arcSettings, arcSettingsCompressed)
+	goDecompress(&animationEventTriggerSettings, animationEventTriggerSettingsCompressed)
+	goDecompress(&beamSettings, beamSettingsCompressed)
+	goDecompress(&customizationArmorSets, customizationArmorSetsCompressed)
+	goDecompress(&customizationPassiveBonuses, customizationPassiveBonusesCompressed)
+	goDecompress(&damageSettings, damageSettingsCompressed)
+	goDecompress(&environmentSettings, environmentSettingsCompressed)
+	goDecompress(&explosionSettings, explosionSettingsCompressed)
+	goDecompress(&planetData, planetDataCompressed)
+	goDecompress(&planetOverrideSettings, planetOverrideSettingsCompressed)
+	goDecompress(&planetRegionSettings, planetRegionSettingsCompressed)
+	goDecompress(&planetTypesSettings, planetTypesSettingsCompressed)
+	goDecompress(&projectileSettings, projectileSettingsCompressed)
+	goDecompress(&regionSettings, regionSettingsCompressed)
+	goDecompress(&skySettings, skySettingsCompressed)
+	goDecompress(&unitCustomizationSettings, unitCustomizationSettingsCompressed)
+	goDecompress(&weaponCustomizationSettings, weaponCustomizationSettingsCompressed)
+	goDecompress(&zoneSettings, zoneSettingsCompressed)
+	goDecompress(&typelib, typelibCompressed)
+	goParseHashes()
+	wg.Wait()
+
+	//fmt.Println(time.Since(start))
+}
+
+// Units that have names that don't match any entity that uses them
+func UnitsToEntities(unitHash stingray.Hash) (entityHash stingray.Hash) {
+	// There's probably several more of these but these are the ones I know about
+	switch unitHash {
+	case stingray.Sum("content/fac_cyborgs/cha_lieutenant_assault/cha_lieutenant_assault"):
+		return stingray.Sum("content/fac_cyborgs/cha_lieutenant/cha_lieutenant_assault")
+	case stingray.Sum("content/fac_cyborgs/cha_lieutenant/cha_lieutenant"):
+		return stingray.Sum("content/fac_cyborgs/cha_lieutenant/cha_lieutenant_base")
+	case stingray.Sum("content/fac_cyborgs/turrets/cyborg_tank_turret_cannon/cyborg_tank_turret_cannon"):
+		return stingray.Sum("content/fac_cyborgs/turrets/cyborg_tank_turret_cannon/cyborg_turret_heavycannon")
+	case stingray.Sum("content/fac_cyborgs/turrets/cyborg_tank_turret_mortar/cyborg_tank_turret_mortar"):
+		return stingray.Sum("content/fac_cyborgs/turrets/cyborg_tank_turret_mortar/cyborg_turret_mortar")
+	case stingray.Sum("content/fac_cyborgs/vehicles/cyborg_tank/cyborg_tank"):
+		return stingray.Sum("content/fac_cyborgs/vehicles/cyborg_tank/cyborg_tank_heavycannon")
+	case stingray.Sum("content/fac_cyborgs/cha_soldier/cha_soldier_heavy_weapon"):
+		return stingray.Sum("content/fac_cyborgs/cha_soldier/cha_soldier_mg")
+	case stingray.Sum("content/fac_cyborgs/cha_soldier/cha_soldier_rocket"):
+		return stingray.Sum("content/fac_cyborgs/cha_soldier/cha_soldier_rpg")
+	case stingray.Sum("content/fac_cyborgs/cha_cyborg_elite/cha_elite_female"):
+		return stingray.Sum("content/fac_cyborgs/cha_cyborg_elite/cha_cyborg_elite_female")
+	case stingray.Sum("content/fac_cyborgs/cha_conscript/cha_conscript"):
+		return stingray.Sum("content/fac_cyborgs/cha_conscript/cha_conscript_base")
+	case stingray.Sum("content/fac_bugs/cha_warrior/cha_warrior"):
+		return stingray.Sum("content/fac_bugs/cha_warrior/cha_warrior_base")
+	case stingray.Sum("content/fac_bugs/cha_warrior/cha_warrior_gloom_tier_1"):
+		return stingray.Sum("content/fac_bugs/cha_warrior/cha_warrior_gloom")
+	}
+	return unitHash
+}
+
+const BitsPerWord = 32 << (^uint(0) >> 63)
+
+type DLHash uint32
+
+func Sum(text string) DLHash {
+	result := uint32(5381)
+	for _, char := range text {
+		result = result*33 + uint32(char)
+	}
+	return DLHash(result - 5381)
+}
+
+func (h DLHash) MarshalText() ([]byte, error) {
+	return []byte(h.String()), nil
+}
+
+func (h DLHash) String() string {
+	if h == 0 {
+		return "(builtin)"
+	}
+	typeName, ok := DLHashesToStrings[h]
+	if !ok {
+		return strconv.FormatUint(uint64(h), 16)
+	}
+	return typeName
+}
+
+func (h DLHash) StringEndian(endian binary.ByteOrder) string {
+	var b [4]byte
+	endian.PutUint32(b[:], uint32(h))
+	return hex.EncodeToString(b[:])
+}
+
+// 4 bytes for alignment purposes
+type DLTypeFlags uint32
+
+func (f DLTypeFlags) HasSubdata() bool {
+	return f&0x1 != 0
+}
+
+func (f DLTypeFlags) IsExternal() bool {
+	return f&0x2 != 0
+}
+
+func (f DLTypeFlags) IsUnion() bool {
+	return f&0x4 != 0
+}
+
+func (f DLTypeFlags) VerifyExternalSizeAlign() bool {
+	return f&0x8 != 0
+}
+
+func (f DLTypeFlags) MarshalJSON() ([]byte, error) {
+	return json.Marshal(map[string]any{
+		"has_subdata":                f.HasSubdata(),
+		"is_external":                f.IsExternal(),
+		"is_union":                   f.IsUnion(),
+		"verify_external_size_align": f.VerifyExternalSizeAlign(),
+	})
+}
+
+type DLWidthDependentUInt32 [2]uint32
+
+func (u DLWidthDependentUInt32) Get32() uint32 {
+	return u[0]
+}
+
+func (u DLWidthDependentUInt32) Get64() uint32 {
+	return u[1]
+}
+
+func (u DLWidthDependentUInt32) GetNative() uint32 {
+	if BitsPerWord == 32 {
+		return u[0]
+	}
+	return u[1]
+}
+
+type DLTypeAtom uint8
+
+const (
+	POD DLTypeAtom = iota
+	ARRAY
+	INLINE_ARRAY
+	BITFIELD
+
+	ATOM_CNT
+)
+
+func (atom DLTypeAtom) MarshalText() ([]byte, error) {
+	return []byte(atom.String()), nil
+}
+
+//go:generate go run golang.org/x/tools/cmd/stringer -type=DLTypeAtom
+
+type DLTypeStorage uint8
+
+const (
+	INT8 DLTypeStorage = iota
+	INT16
+	INT32
+	INT64
+	UINT8
+	UINT16
+	UINT32
+	UINT64
+	FP32
+	FP64
+	ENUM_INT8
+	ENUM_INT16
+	ENUM_INT32
+	ENUM_INT64
+	ENUM_UINT8
+	ENUM_UINT16
+	ENUM_UINT32
+	ENUM_UINT64
+	STR
+	PTR
+	STRUCT
+
+	STORAGE_CNT
+)
+
+func (storage DLTypeStorage) MarshalText() ([]byte, error) {
+	return []byte(storage.String()), nil
+}
+
+//go:generate go run golang.org/x/tools/cmd/stringer -type=DLTypeStorage
+
+type DLBitfieldOrArrayLen uint16
+
+func (b DLBitfieldOrArrayLen) GetArrayLen() uint16 {
+	return uint16(b)
+}
+
+func (b DLBitfieldOrArrayLen) GetBits() uint8 {
+	return uint8(b)
+}
+
+func (b DLBitfieldOrArrayLen) GetOffset() uint8 {
+	return uint8(b >> 8)
+}
+
+func (b DLBitfieldOrArrayLen) MarshalJSON() ([]byte, error) {
+	return json.Marshal(map[string]any{
+		"inline_array_len": b.GetArrayLen(),
+		"bits":             b.GetBits(),
+		"bit_offset":       b.GetOffset(),
+	})
+}
+
+type DLType struct {
+	Atom                   DLTypeAtom           `json:"atom"`
+	Storage                DLTypeStorage        `json:"storage"`
+	BitfieldInfoOrArrayLen DLBitfieldOrArrayLen `json:"union_arrayinfo_bfinfo"`
+}
+
+type DLTypeLibHeader struct {
+	ID      [4]uint8 `json:"-"`
+	Version uint32   `json:"version"`
+
+	TypeCount      uint32 `json:"type_count"`
+	EnumCount      uint32 `json:"enum_count"`
+	MemberCount    uint32 `json:"member_count"`
+	EnumValueCount uint32 `json:"enum_value_count"`
+	EnumAliasCount uint32 `json:"enum_alias_count"`
+
+	DefaultValueSize    uint32 `json:"default_value_size"`
+	TypeInfoStringsSize uint32 `json:"typeinfo_strings_size"`
+}
+
+type rawDLMemberDesc struct {
+	NameOffset         uint32
+	CommentOffset      uint32
+	UnknownOffset      uint32
+	Type               DLType
+	TypeID             DLHash
+	Size               DLWidthDependentUInt32
+	Alignment          DLWidthDependentUInt32
+	Offset             DLWidthDependentUInt32
+	DefaultValueOffset uint32
+	DefaultValueSize   uint32
+	Flags              DLTypeFlags
+	_                  [16]uint8
+}
+
+type DLMemberDesc struct {
+	Name          string      `json:"name"`
+	NameOffset    uint32      `json:"name_offset"`
+	NameLength    uint32      `json:"name_length"`
+	Comment       string      `json:"comment,omitempty"`
+	CommentOffset uint32      `json:"comment_offset,omitzero"`
+	CommentLength uint32      `json:"comment_length,omitzero"`
+	Type          DLType      `json:"type_flags"`
+	TypeID        DLHash      `json:"type"`
+	Size          uint32      `json:"size"`
+	Alignment     uint32      `json:"alignment"`
+	Offset        uint32      `json:"offset"`
+	DefaultValue  []uint8     `json:"-"`
+	Flags         DLTypeFlags `json:"flags"`
+}
+
+type rawDLTypeDesc struct {
+	NameOffset    uint32
+	Flags         DLTypeFlags
+	Size          DLWidthDependentUInt32
+	Alignment     DLWidthDependentUInt32
+	MemberCount   uint32
+	MemberStart   uint32
+	CommentOffset uint32
+}
+
+type DLTypeDesc struct {
+	Name          string         `json:"name"`
+	NameOffset    uint32         `json:"name_offset"`
+	NameLength    uint32         `json:"name_length"`
+	Flags         DLTypeFlags    `json:"flags"`
+	Size          uint32         `json:"size"`
+	Alignment     uint32         `json:"alignment"`
+	Members       []DLMemberDesc `json:"members,omitempty"`
+	Comment       string         `json:"comment,omitempty"`
+	CommentOffset uint32         `json:"comment_offset,omitzero"`
+	CommentLength uint32         `json:"comment_length,omitzero"`
+}
+
+type rawDLEnumDesc struct {
+	NameOffset    uint32
+	Flags         DLTypeFlags
+	Storage       DLTypeStorage
+	_             [3]uint8
+	ValueCount    uint32
+	ValueStart    uint32
+	AliasCount    uint32
+	AliasStart    uint32
+	CommentOffset uint32
+}
+
+type rawDLEnumValueDesc struct {
+	MainAlias     uint32
+	CommentOffset uint32
+	Value         uint64
+}
+
+type rawDLEnumAliasDesc struct {
+	NameOffset uint32
+	ValueIndex uint32
+}
+
+type DLEnumValueDesc struct {
+	Name          string   `json:"name"`
+	NameOffset    uint32   `json:"name_offset"`
+	NameLength    uint32   `json:"name_length"`
+	Comment       string   `json:"comment,omitempty"`
+	CommentOffset uint32   `json:"comment_offset,omitzero"`
+	CommentLength uint32   `json:"comment_length,omitzero"`
+	Value         uint64   `json:"value"`
+	Aliases       []string `json:"aliases,omitempty"`
+}
+
+type DLEnumDesc struct {
+	Name          string            `json:"name"`
+	NameOffset    uint32            `json:"name_offset"`
+	NameLength    uint32            `json:"name_length"`
+	Comment       string            `json:"comment,omitempty"`
+	CommentOffset uint32            `json:"comment_offset,omitzero"`
+	Flags         DLTypeFlags       `json:"flags"`
+	Storage       DLTypeStorage     `json:"storage"`
+	Values        []DLEnumValueDesc `json:"values"`
+}
+
+type DLTypeLib struct {
+	DLTypeLibHeader `json:"header"`
+	Types           map[DLHash]DLTypeDesc `json:"types,omitempty"`
+	Enums           map[DLHash]DLEnumDesc `json:"enums,omitempty"`
+}
+
+type DLArray struct {
+	Offset int64
+	Count  uint64
+}
+
+func ResolveDLArray[T any](d DLArray, r io.ReadSeeker, base int64) (result []T, err error) {
+	if d.Offset < 0 {
+		return make([]T, 0), nil
+	}
+	var originalOffset int64
+	if originalOffset, err = r.Seek(base+d.Offset, io.SeekStart); err != nil {
+		return
+	}
+	result = make([]T, d.Count)
+	if err = binary.Read(r, binary.LittleEndian, result); err != nil {
+		return
+	}
+	_, err = r.Seek(originalOffset, io.SeekStart)
+	return
+}
+
+type DLString struct {
+	Offset int64
+}
+
+func (d DLString) Resolve(r io.ReadSeeker, base int64) (*string, error) {
+	if d.Offset < 0 {
+		return nil, nil
+	}
+	if _, err := r.Seek(base+d.Offset, io.SeekStart); err != nil {
+		return nil, err
+	}
+	result, err := util.ReadCString(r)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+type DLPtr struct {
+	Offset int64
+}
+
+func ResolveDLPtr[T any](d DLPtr, r io.ReadSeeker, base int64) (*T, error) {
+	if d.Offset < 0 {
+		return nil, nil
+	}
+	var originalOffset int64
+	var err error
+	if originalOffset, err = r.Seek(base+d.Offset, io.SeekStart); err != nil {
+		return nil, err
+	}
+	var result T
+	if err = binary.Read(r, binary.LittleEndian, &result); err != nil {
+		return nil, err
+	}
+	_, err = r.Seek(originalOffset, io.SeekStart)
+	return &result, err
+}
+
+var parsedTypelib *DLTypeLib = nil
+
+func ParseTypeLib(data []byte) (*DLTypeLib, error) {
+	if parsedTypelib != nil && data == nil {
+		return parsedTypelib, nil
+	}
+
+	if data == nil {
+		data = typelib
+	}
+	r := bytes.NewReader(data)
+	var header DLTypeLibHeader
+	if err := binary.Read(r, binary.LittleEndian, &header); err != nil {
+		return nil, err
+	}
+
+	typeHashes := make([]DLHash, header.TypeCount)
+	if err := binary.Read(r, binary.LittleEndian, &typeHashes); err != nil {
+		return nil, err
+	}
+
+	enumHashes := make([]DLHash, header.EnumCount)
+	if err := binary.Read(r, binary.LittleEndian, &enumHashes); err != nil {
+		return nil, err
+	}
+
+	typeDescs := make([]rawDLTypeDesc, header.TypeCount)
+	if err := binary.Read(r, binary.LittleEndian, &typeDescs); err != nil {
+		return nil, err
+	}
+
+	enumDescs := make([]rawDLEnumDesc, header.EnumCount)
+	if err := binary.Read(r, binary.LittleEndian, &enumDescs); err != nil {
+		return nil, err
+	}
+
+	memberDescs := make([]rawDLMemberDesc, header.MemberCount)
+	if err := binary.Read(r, binary.LittleEndian, &memberDescs); err != nil {
+		return nil, err
+	}
+
+	enumValueDescs := make([]rawDLEnumValueDesc, header.EnumValueCount)
+	if err := binary.Read(r, binary.LittleEndian, &enumValueDescs); err != nil {
+		return nil, err
+	}
+
+	enumAliasDescs := make([]rawDLEnumAliasDesc, header.EnumAliasCount)
+	if err := binary.Read(r, binary.LittleEndian, &enumAliasDescs); err != nil {
+		return nil, err
+	}
+
+	defaultData := make([]byte, header.DefaultValueSize)
+	if err := binary.Read(r, binary.LittleEndian, &defaultData); err != nil {
+		return nil, err
+	}
+
+	stringsData := make([]byte, header.TypeInfoStringsSize)
+	if err := binary.Read(r, binary.LittleEndian, &stringsData); err != nil {
+		return nil, err
+	}
+
+	getDLText := func(hash DLHash, offset uint32) string {
+		var text string
+		if offset == math.MaxUint32 {
+			return ""
+		} else if value, contains := DLHashesToStrings[hash]; (len(stringsData) == 0 || bytes.IndexByte(stringsData[offset:], 0) == -1) && !contains {
+			text = strconv.FormatUint(uint64(hash), 16)
+		} else if contains {
+			text = value
+		} else {
+			nameEnd := bytes.IndexByte(stringsData[offset:], 0)
+			text = string(stringsData[offset : offset+uint32(nameEnd)])
+		}
+		return text
+	}
+
+	getDLEnumAliasText := func(enum string, offset uint32) string {
+		var text string
+		if offset == math.MaxUint32 {
+			return ""
+		} else if len(stringsData) == 0 || bytes.IndexByte(stringsData[offset:], 0) == -1 {
+			text = enum + "_" + strconv.FormatUint(uint64(offset), 16)
+		} else {
+			nameEnd := bytes.IndexByte(stringsData[offset:], 0)
+			text = string(stringsData[offset : offset+uint32(nameEnd)])
+		}
+		return text
+	}
+
+	getDLUnhashedText := func(offset uint32) string {
+		var text string
+		if offset == math.MaxUint32 {
+			return ""
+		} else if len(stringsData) == 0 || bytes.IndexByte(stringsData[offset:], 0) == -1 {
+			text = strconv.FormatUint(uint64(offset), 16)
+		} else {
+			nameEnd := bytes.IndexByte(stringsData[offset:], 0)
+			text = string(stringsData[offset : offset+uint32(nameEnd)])
+		}
+		return text
+	}
+
+	stringOffsets := make([]uint32, 0)
+	stringOffsetsMap := make(map[uint32]int)
+	Types := make(map[DLHash]DLTypeDesc)
+	for hashIdx, typeDesc := range typeDescs {
+		members := make([]DLMemberDesc, 0)
+		for i := typeDesc.MemberStart; i < typeDesc.MemberStart+typeDesc.MemberCount && i < uint32(len(memberDescs)); i++ {
+			defaultValue := make([]byte, 0)
+			if memberDescs[i].DefaultValueOffset != math.MaxUint32 && memberDescs[i].DefaultValueSize != math.MaxUint32 {
+				defaultValue = defaultData[memberDescs[i].DefaultValueOffset : memberDescs[i].DefaultValueOffset+memberDescs[i].DefaultValueSize]
+			}
+			stringOffsetsMap[memberDescs[i].NameOffset] = len(stringOffsets)
+			stringOffsets = append(stringOffsets, memberDescs[i].NameOffset)
+			commentOffset := memberDescs[i].CommentOffset
+			if commentOffset == math.MaxUint32 {
+				commentOffset = 0
+			} else {
+				stringOffsetsMap[commentOffset] = len(stringOffsets)
+				stringOffsets = append(stringOffsets, commentOffset)
+			}
+			members = append(members, DLMemberDesc{
+				Name:          getDLUnhashedText(memberDescs[i].NameOffset),
+				NameOffset:    memberDescs[i].NameOffset,
+				Comment:       getDLUnhashedText(memberDescs[i].CommentOffset),
+				CommentOffset: commentOffset,
+				Type:          memberDescs[i].Type,
+				TypeID:        memberDescs[i].TypeID,
+				Size:          memberDescs[i].Size.GetNative(),
+				Alignment:     memberDescs[i].Alignment.GetNative(),
+				Offset:        memberDescs[i].Offset.GetNative(),
+				DefaultValue:  defaultValue,
+				Flags:         memberDescs[i].Flags,
+			})
+		}
+		stringOffsetsMap[typeDesc.NameOffset] = len(stringOffsets)
+		stringOffsets = append(stringOffsets, typeDesc.NameOffset)
+		var commentOffset uint32 = 0
+		if typeDesc.CommentOffset != math.MaxUint32 {
+			commentOffset = typeDesc.CommentOffset
+			stringOffsetsMap[typeDesc.CommentOffset] = len(stringOffsets)
+			stringOffsets = append(stringOffsets, typeDesc.CommentOffset)
+		}
+		Types[typeHashes[hashIdx]] = DLTypeDesc{
+			Name:          getDLText(typeHashes[hashIdx], typeDesc.NameOffset),
+			NameOffset:    typeDesc.NameOffset,
+			Flags:         typeDesc.Flags,
+			Size:          typeDesc.Size.GetNative(),
+			Alignment:     typeDesc.Alignment.GetNative(),
+			Members:       members,
+			Comment:       getDLUnhashedText(typeDesc.CommentOffset),
+			CommentOffset: commentOffset,
+		}
+	}
+
+	Enums := make(map[DLHash]DLEnumDesc)
+	for hashIdx, enumDesc := range enumDescs {
+		values := make([]DLEnumValueDesc, 0)
+		enumName := getDLText(enumHashes[hashIdx], enumDesc.NameOffset)
+		for i := enumDesc.ValueStart; i < enumDesc.ValueStart+enumDesc.ValueCount && i < uint32(len(enumValueDescs)); i++ {
+			aliases := enumAliasDescs[enumDesc.AliasStart : enumDesc.AliasStart+enumDesc.AliasCount]
+			mainAlias := enumAliasDescs[enumValueDescs[i].MainAlias]
+
+			aliasNames := make([]string, 0)
+			for _, alias := range aliases {
+				if alias.NameOffset != math.MaxUint32 {
+					stringOffsetsMap[alias.NameOffset] = len(stringOffsets)
+					stringOffsets = append(stringOffsets, alias.NameOffset)
+				}
+				if alias.ValueIndex != i {
+					continue
+				}
+				aliasNames = append(aliasNames, getDLEnumAliasText(enumName, alias.NameOffset))
+			}
+
+			if len(aliasNames) > 1 {
+				aliasNames = aliasNames[1:]
+			} else {
+				aliasNames = make([]string, 0)
+			}
+
+			var commentOffset uint32 = 0
+			if enumValueDescs[i].CommentOffset != math.MaxUint32 {
+				commentOffset = enumValueDescs[i].CommentOffset
+				stringOffsetsMap[enumValueDescs[i].CommentOffset] = len(stringOffsets)
+				stringOffsets = append(stringOffsets, enumValueDescs[i].CommentOffset)
+			}
+			values = append(values, DLEnumValueDesc{
+				Name:          getDLEnumAliasText(enumName, mainAlias.NameOffset),
+				NameOffset:    mainAlias.NameOffset,
+				Comment:       getDLUnhashedText(enumValueDescs[i].CommentOffset),
+				CommentOffset: commentOffset,
+				Value:         enumValueDescs[i].Value,
+				Aliases:       aliasNames,
+			})
+		}
+
+		stringOffsetsMap[enumDesc.NameOffset] = len(stringOffsets)
+		stringOffsets = append(stringOffsets, enumDesc.NameOffset)
+
+		var enumComment string
+		var commentOffset uint32 = 0
+		if enumDesc.CommentOffset != math.MaxUint32 {
+			commentOffset = enumDesc.CommentOffset
+			stringOffsetsMap[enumDesc.CommentOffset] = len(stringOffsets)
+			stringOffsets = append(stringOffsets, enumDesc.CommentOffset)
+			enumComment = getDLUnhashedText(commentOffset)
+		}
+
+		Enums[enumHashes[hashIdx]] = DLEnumDesc{
+			Name:          enumName,
+			NameOffset:    enumDesc.NameOffset,
+			Comment:       enumComment,
+			CommentOffset: commentOffset,
+			Flags:         enumDesc.Flags,
+			Storage:       enumDesc.Storage,
+			Values:        values,
+		}
+	}
+
+	sortedStringOffsets := slices.Sorted(func(yield func(uint32) bool) {
+		for _, val := range stringOffsets {
+			if !yield(val) {
+				return
+			}
+		}
+	})
+	sortedStringOffsetsMap := make(map[uint32]int)
+	for idx, offset := range sortedStringOffsets {
+		sortedStringOffsetsMap[offset] = idx
+	}
+	for hash := range Types {
+		offsetIndex := sortedStringOffsetsMap[Types[hash].NameOffset]
+		nameOffset := sortedStringOffsets[offsetIndex]
+		var nameLength uint32 = 0
+		if offsetIndex+1 < len(sortedStringOffsets) {
+			nameLength = sortedStringOffsets[offsetIndex+1] - nameOffset - 1 // account for null terminator
+		}
+
+		var commentLength uint32 = 0
+		if Types[hash].CommentOffset != 0 {
+			offsetIndex = sortedStringOffsetsMap[Types[hash].CommentOffset]
+			commentOffset := sortedStringOffsets[offsetIndex]
+			if offsetIndex+1 < len(sortedStringOffsets) {
+				commentLength = sortedStringOffsets[offsetIndex+1] - commentOffset - 1 // account for null terminator
+			}
+		}
+
+		for i, member := range Types[hash].Members {
+			offsetIndex = sortedStringOffsetsMap[member.NameOffset]
+			memberNameOffset := sortedStringOffsets[offsetIndex]
+			var memberNameLength uint32 = 0
+			if offsetIndex+1 < len(sortedStringOffsets) {
+				memberNameLength = sortedStringOffsets[offsetIndex+1] - memberNameOffset - 1 // account for null terminator
+			}
+			Types[hash].Members[i].NameLength = memberNameLength
+
+			if member.CommentOffset != 0 {
+				offsetIndex = sortedStringOffsetsMap[member.CommentOffset]
+				memberCommentOffset := sortedStringOffsets[offsetIndex]
+				var memberCommentLength uint32 = 0
+				if offsetIndex+1 < len(sortedStringOffsets) {
+					memberCommentLength = sortedStringOffsets[offsetIndex+1] - memberCommentOffset - 1 // account for null terminator
+				}
+				Types[hash].Members[i].CommentLength = memberCommentLength
+			}
+		}
+
+		typeDesc := Types[hash]
+		typeDesc.NameLength = nameLength
+		typeDesc.CommentLength = commentLength
+		Types[hash] = typeDesc
+	}
+
+	for hash := range Enums {
+		offsetIndex := sortedStringOffsetsMap[Enums[hash].NameOffset]
+		nameOffset := sortedStringOffsets[offsetIndex]
+		var nameLength uint32 = 0
+		if offsetIndex+1 < len(sortedStringOffsets) {
+			nameLength = sortedStringOffsets[offsetIndex+1] - nameOffset - 1 // account for null terminator
+		}
+		enumDesc := Enums[hash]
+		enumDesc.NameLength = nameLength
+		Enums[hash] = enumDesc
+
+		for i, value := range Enums[hash].Values {
+			offsetIndex = sortedStringOffsetsMap[value.NameOffset]
+			valueNameOffset := sortedStringOffsets[offsetIndex]
+			var valueNameLength uint32 = 0
+			if offsetIndex+1 < len(sortedStringOffsets) {
+				valueNameLength = sortedStringOffsets[offsetIndex+1] - valueNameOffset - 1 // account for null terminator
+			}
+			Enums[hash].Values[i].NameLength = valueNameLength
+
+			if value.CommentOffset != 0 {
+				offsetIndex = sortedStringOffsetsMap[value.CommentOffset]
+				valueCommentOffset := sortedStringOffsets[offsetIndex]
+				var valueCommentLength uint32 = 0
+				if offsetIndex+1 < len(sortedStringOffsets) {
+					valueCommentLength = sortedStringOffsets[offsetIndex+1] - valueCommentOffset - 1 // account for null terminator
+				}
+				Enums[hash].Values[i].CommentLength = valueCommentLength
+			}
+		}
+	}
+
+	parsedTypelib = &DLTypeLib{
+		DLTypeLibHeader: header,
+		Types:           Types,
+		Enums:           Enums,
+	}
+	return parsedTypelib, nil
+}

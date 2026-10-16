@@ -1,0 +1,11 @@
+OK - patch applied (revision 1.2.1): 120mm HE Barrage projectiles cloned to Eagle 500kg bombs
+mod=mods/hd2/orbital_120mm_500kg revision=1.2.1
+phase=patched frames=9000
+loader_api=1 loader_version=17
+scan_pass=1 region=124/5965 off=3145728 scanned_mb=5276.8
+bomb_projectile_type=239 src=block@0x1BFF42A0004 form=mem rec#12 (mass=500 cal=50 speed=500)
+bomb_blocks=0 proj_blocks=1 patched_copies=0 proj_clones=2
+  copy1: block@0x0 rec@0x1BFF42A8F9C slots=272 off+0
+  copy2: block@0x0 rec@0x1BFF42A90AC slots=272 off+0
+effect: Orbital 120mm HE Barrage fires Eagle 500kg bombs (ProjectileType_Bomb_500kg)
+note: client-side memory patch; needs to run on the HOST for damage to apply
