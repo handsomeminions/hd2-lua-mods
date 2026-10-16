@@ -1,18 +1,18 @@
-> **[TX-41 灭菌器 → 开火音效替换（实验性）](09-sterilizer-punchier-sfx.md)**　v1.0.0
+> **[TX-41 灭菌器 → 开火音效替换](07-sterilizer-punchier-sfx.md)**　v1.0.0　·　**实机** ✅ 已上机验证通过
 >
 > [← 返回总览](../README.md) · [全部 Mod 一览](../README.md#-全部-mod-一览7-个)
 >
-> **安装包** [`dist/Sterilizer-PunchierSFX.zip`](../dist/Sterilizer-PunchierSFX.zip)　·　**源码** [`src/sterilizer_sfx.lua`](../src/sterilizer_sfx.lua)　·　**离线测试** `analysis/test_sterilizer_sfx.py`（16/16）
+> **安装包** [`dist/Sterilizer-PunchierSFX.zip`](../dist/Sterilizer-PunchierSFX.zip)　·　**源码** [`src/sterilizer_sfx.lua`](../src/sterilizer_sfx.lua)
 >
-> **Manifest GUID** `43181292-a226-45de-9610-46a2de6cadfc`
+> **离线测试** `analysis/test_sterilizer_sfx.py`（16/16）　·　**Manifest GUID** `43181292-a226-45de-9610-46a2de6cadfc`
 
 ---
 
-# TX-41 灭菌器 · 开火音效替换（实验性）
+# TX-41 灭菌器 · 开火音效替换
 
 > **一句话**：把灭菌器开火时那个"软绵绵"的喷气声，**换成另一个更明显的喷射音效**（默认 = 敌方化学无人机的喷毒声）。
 > ⚠️ **先说清楚：把"原声放大"这件事做不到** —— 原因见第二节，不是偷懒。
-> ⚠️ **本 mod 是实验性的**：它能不能生效，取决于游戏有没有把那段数据留在内存里。**一次上机就能知道**。
+> ✅ **已实机验证通过** —— 内存路线成立，灭菌器开火时确实播放了替换后的音效事件。
 
 - 安装包：`dist/Sterilizer-PunchierSFX.zip`
 - 源码：`src/sterilizer_sfx.lua`（v1.0.0）
@@ -64,9 +64,9 @@
 ⇒ 所以内存补丁**最多只能"换一个音效事件"，不可能"把原声调大"**。
 HD2 社区做音效 mod 的正路是**资源替换**（`hd2-audio-modder` + Wwise 重新编码 `.wem`），那是另一条工具链，本 mod 不产出那种包。
 
-**至于本 mod 为什么还可能有效**：普查只能发现"数据表"，发现不了"运行时实例的裸数据"。
-武器在手里时，它的组件实例很可能带着这些 event 值躺在内存里 —— 本 mod 就是在赌这一点。
-**赌不中就什么都不会发生**（STATUS 会明说）。
+**至于本 mod 为什么能生效**：普查只能发现"数据表"，发现不了"运行时实例的裸数据"。
+武器在手里时，它的组件实例带着这些 event 值躺在内存里 —— 本 mod 就是靠这个特征去定位并改写的。
+（已实机确认；若某次游戏更新后 STATUS 一直停在 `SEARCHING`，说明这段数据不再常驻，届时看 STATUS 的 `hits` / `lone_hits_skipped` 即可判断。）
 
 ## 三、怎么用
 

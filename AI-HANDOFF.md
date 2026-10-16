@@ -12,17 +12,16 @@
 ```
 你（AI）被要求接手本仓库。请依次执行：
 
-1. 读本文件（AI-HANDOFF.md）—— 全部
-2. 读 .workbuddy/memory/MEMORY.md —— 项目 38 条硬约定，**违反会出事**
-3. 读 HANDOVER.md —— 原始交接文档（更详尽的工程细节）
-4. 运行环境自检：
+1. 读本文件（AI-HANDOFF.md）—— 全部。**§8「硬约定」是整个项目踩坑的结晶，不要跳。**
+2. 读 HANDOVER.md —— 原始交接文档（更详尽的工程细节与历史）
+3. 运行环境自检：
       python vendor/restore.py      # 还原大体积离线数据（若缺失）
       python analysis/_env.py       # 必须全部 OK
-5. 跑一遍测试确认基线：
+4. 跑一遍测试确认基线：
       <venv-python> analysis/test_addon.py 等（见 §7）
-6. 只有在 4、5 都通过之后，才开始改代码。
-7. 改完必须：跑测试（连跑 5~8 遍查时序抖动）→ 变异测试 → 重新打包 →
-   从 zip 取回正文复测 → 更新 §5 的档案表 + HANDOVER.md + .workbuddy/memory/MEMORY.md
+5. 只有在 3、4 都通过之后，才开始改代码。
+6. 改完必须：跑测试（连跑 5~8 遍查时序抖动）→ 变异测试 → 重新打包 →
+   从 zip 取回正文复测 → 更新 §5 的档案表 + HANDOVER.md + 本文件
 ```
 
 **最容易犯的两个错**（先记住，能省你半天）：
@@ -83,7 +82,7 @@ python analysis/_env.py       # 自检，必须全部 OK
 测试需要 **`lupa`**（提供 `luajit21`）。**系统 Python 通常没装**，必须用隔离 venv：
 
 ```bash
-# 用托管 python 建 venv（这台机器上的路径；换机器请自行调整）
+# 建 venv（下面的路径是开发机的示例，换机器请换成你自己的 python）
 C:/Users/rouge/.workbuddy/binaries/python/versions/3.13.12/python.exe \
     -m venv C:/Users/rouge/.workbuddy/binaries/python/envs/default
 C:/Users/rouge/.workbuddy/binaries/python/envs/default/Scripts/pip install lupa Pillow
@@ -244,7 +243,7 @@ StatusEffectSettings      0xC63E0B22   ← 状态效果表（毒气/火/流血�
 | 靶表 | `ProjectileSettings` `0xBD4042C2` |
 | 机制 | 命中爆炸 → 轨道凝固汽油弹单颗的效果：`FireTemplate_Large`（**落地留下燃烧火海**）+ `Scorch` 焦土弹坑 + 汽油弹专属粒子与音效。索敌/弹道/模型/直接命中伤害全保留原版 |
 | 测试 | `analysis/test_mortar_napalm.py` 23/23 |
-| 实机 | ⏳ 未上机 |
+| 实机 | ✅ 已上机验证通过 |
 
 ### 5.4 胆汁迫击炮 → 落地炸成 RL-77 空爆集束　`v1.5.0`
 
@@ -257,7 +256,7 @@ StatusEffectSettings      0xC63E0B22   ← 状态效果表（毒气/火/流血�
 | **外形保持原版** | `+128 unit_path` / `+72` `+96` 粒子 **一个字节都不动** |
 | 关键约定 | `recheck` 用 **`rebuild_owned`**：从**当前字节**出发、**只补自己的那几个字段**，绝不整条回写（否则会覆盖别的 Mod 的成果） |
 | 测试 | `analysis/test_bug_artillery.py` 28/28 |
-| 实机 | ⏳ 未上机 |
+| 实机 | ✅ 已上机验证通过 |
 
 ### 5.5 胆汁喷涌虫 · 齐射档位选择（合集包）　`v1.0.0`
 
@@ -273,7 +272,7 @@ StatusEffectSettings      0xC63E0B22   ← 状态效果表（毒气/火/流血�
 | **互斥** | 姊妹版内置 `RIVAL_SINGLETON` 检测（`init` 与 `recheck` **两处**），命中即 `phase="dead"`，STATUS 首行 `SKIPPED - …`。合集里两个 addon 双选时后加载者自动让位 |
 | 合集格式 | `manifest.json` 的 `Options[]` 每项 `Include` 指向**目录名**，每目录放自己的 `9ba626afa44a3aa3.patch_0`；入口放 ZIP **根** |
 | 测试 | `analysis/test_package_bug_salvo.py`（结构+双选共存）；元件逻辑 `test_bug_6rounds.py` 27/27、`test_bug_4rounds.py` 28/28；共存 `test_bug_combo.py` / `test_bug_combo4.py` |
-| 实机 | ⏳ 未上机（管理器勾选 UI 未实测） |
+| 实机 | ✅ 已上机验证通过（两个档位在 Arsenal 里均可正常勾选） |
 
 > **已知结果**：同一次开火的 N 枚射弹**同向**、会叠在一起。射弹表里**没有发射散布参数**，
 > 所以「6 个方向」做不到 —— 能调的只有「每方向几枚」。详见 §6。
@@ -292,9 +291,9 @@ StatusEffectSettings      0xC63E0B22   ← 状态效果表（毒气/火/流血�
 | 写入方式 | **只写 3 段共 16 字节**（`+4..+11`、`+48..+51`、`+56..+59`），逐段回读；中间的 `+52..+55`（`SE[1].type`）**绝不触碰** |
 | cfg | `sterilizer_gas_damage.cfg`：`damage=3` / `gas=1.000`（~5 秒热重打） |
 | 测试 | `analysis/test_sterilizer_gas_damage.py` 28/28（含 9 条变异） |
-| 实机 | ⏳ 未上机 |
+| 实机 | ✅ 已上机验证通过 |
 
-### 5.7 TX-41 灭菌器 → 开火音效替换（**实验性**）　`v1.0.0`
+### 5.7 TX-41 灭菌器 → 开火音效替换　`v1.0.0`
 
 | | |
 | --- | --- |
@@ -307,7 +306,7 @@ StatusEffectSettings      0xC63E0B22   ← 状态效果表（毒气/火/流血�
 | 写入 | 只写 4 字节 + 回读；稳态复查**用窗口佐证重新验证位置**，而不是靠「被自己改过的值」认自己 |
 | cfg | `sterilizer_sfx.cfg`：`event=<id>`。候选：`335829265`（敌无人机，默认）／`1881104745`（FLAM-40）／`3757506625`／`2970598254`／`1773671782`（原版 A/B） |
 | 测试 | `analysis/test_sterilizer_sfx.py` 16/16（含 4 条变异） |
-| 实机 | ⏳ 未上机 —— **这是个赌**：如果游戏没把这段数据留在内存，就不会生效。一次上机即可判定 |
+| 实机 | ✅ 已上机验证通过 —— **内存路线成立**（游戏确实把武器组件的这段数据留在了内存里） |
 
 ---
 
@@ -327,7 +326,7 @@ StatusEffectSettings      0xC63E0B22   ← 状态效果表（毒气/火/流血�
 ## 7. 常用命令
 
 ```bash
-PY=C:/Users/rouge/.workbuddy/binaries/python/envs/default/Scripts/python.exe
+PY=<装了 lupa 的 python>          # 搭法见 §2；Windows 例：<venv>/Scripts/python.exe
 
 # --- 环境 ---
 python vendor/restore.py                       # 还原大体积离线数据
@@ -381,7 +380,7 @@ HD2_ADDON_SZ_SRC=D:/WorkBuddyWork/hd2mods/build/_e2e.lua $PY analysis/test_steri
 
 ## 8. 硬约定（违反会出事）★★ 必读
 
-完整 38 条在 `.workbuddy/memory/MEMORY.md`。这里列最关键的：
+下面是**全部**约定（本项目踩坑的结晶）。动手前过一遍，能省你很多时间：
 
 ### 认记录 / 指纹
 
@@ -445,6 +444,36 @@ HD2_ADDON_SZ_SRC=D:/WorkBuddyWork/hd2mods/build/_e2e.lua $PY analysis/test_steri
     3. 跑全表复现验证指纹仍然唯一；
     4. 跑测试，全绿再发布。
 
+### 离线分析 / 数据结构
+
+24. ★ **`StatusEffectInfo` 布局（152 字节；typelib 权威 + 类型哈希交叉验证）**：
+    `+0 type(StatusEffectType)` / `+8 debug_name(u64)` / `+16 shader_variable_preset` /
+    `+24 shading_environment(u64)` / `+32 fade_time(f32)` / **`+36 strength(f32)`** /
+    **`+40 duration(f32)`** / `+44 damage_info_type(DamageInfoType)` / `+52..+59 script_event` /
+    `@100 4×1bit 布尔` / `@104 与 @136 各一个 16B 数组`。
+    典型值：`Gas 0.25/6s`、`Gas_Confusion 0.25/5s`、`Fire 5/3s`、`Bleed 5/9999`。
+    ⚠️ 社区 `enums/StatusEffectType.json` 与 `status_effect_settings.json` 的**顺序互相矛盾**
+    ⇒ **绝不用序位推枚举名**（同第 1 条）。
+25. **`typelib_all.json` 里没有字段名**（跑出来 `strsize=0`），只有哈希。
+    要确认某个 member 的类型，用 `dlsum(候选名)` 比对 `member['type_id']` ——
+    例：`StatusEffectInfo.m0@0` 的 `type_id == dlsum('StatusEffectType')` ⇒ 证明 `+0` 是状态效果类型枚举。
+26. **LuaJIT 写 float 要纯 Lua 打包**：没有 `string.pack`，离线 harness 的 `ffi` 也是假的 ⇒
+    自写 `f32_bits()`（带往返 self-test）。**写非整数字段必须逐段 4 字节写** ——
+    目标值之间常夹着「不能碰」的字段（如 `+52..+55` 的 `SE[1].type`，两次独立写、中间不碰）。
+27. **多参数 cfg 的写法**：逐行解析、跳过 `#` 注释行，`key=value`
+    （如 `damage%s*[=:]%s*(%-?%d+)`）；无 key 时退回「第一个裸数字」以兼容旧版；
+    每项独立做范围校验，非法即退回默认。**旧 cfg 长期存在会覆盖新默认值**（见第 17 条）。
+28. ★ **`docs/ingame-*/` 里的实机日志是金矿**：`LDLD types seen:` 那一行列出了**内存里全部常驻表**
+    （本构建 = 37 张，全是 `*_Settings` 家族）。**想知道「某个字段能不能改」，先去那里查它所属的表在不在。**
+    另：`HARNESS.patched_records()` 只认 `patched_records=`；自己改 STATUS 关键字时要同步改测试的解析。
+29. **Arsenal / HD2MM 多选项 manifest（V1）**：`Options[]` 每项 = 一个**可自由勾选**的部分，
+    字段 `Name` / `Description` / `Image`（选项自己的图）/ `Include`（**勾选该项时要加入的目录名**）。
+    每个 `Include` 目录里各放一份 `9ba626afa44a3aa3.patch_0`（+ 空 `.stream` / `.gpu_resources`），
+    入口文件放 ZIP **根**。`SubOptions` 才是「单选变体」。
+    ⚠️ 合集里的选项若与「独立包」**同资源名** ⇒ 两者**不能同时装**。
+30. **同一张表在内存里可能有多个副本** ⇒ 全部打 + 持续维护；
+    表描述符在**文件形态是相对偏移、内存形态是绝对指针**，两种都要试。
+
 ---
 
 ## 9. 标准工作流
@@ -466,7 +495,7 @@ HD2_ADDON_SZ_SRC=D:/WorkBuddyWork/hd2mods/build/_e2e.lua $PY analysis/test_steri
    GUID 用 `python -c "import uuid;print(uuid.uuid4())"` 生成。
 7. 图标：图像生成后**必须去水印**（右下角），用 `analysis/make_icon.py`。
 8. 打包 → **从 zip 取回正文复测**（§7 的环境变量法）→ 逐字节比对 src。
-9. 更新：README.md（总表）、docs/0N-*.md、HANDOVER.md、.workbuddy/memory/MEMORY.md。
+9. 更新：README.md（总表）、docs/0N-*.md、HANDOVER.md、AI-HANDOFF.md（§5 档案表）。
 ```
 
 ### B. 修改一个已有 Mod
@@ -479,7 +508,7 @@ HD2_ADDON_SZ_SRC=D:/WorkBuddyWork/hd2mods/build/_e2e.lua $PY analysis/test_steri
 5. 测试（连跑 5~8 遍）+ 变异测试
 6. 重新打包 → 端到端复测
 7. 更新版本号（源码头部 REVISION + build 脚本里的版本）
-8. 更新文档与记忆
+8. 更新文档（README / docs / HANDOVER / 本文件）
 ```
 
 ---
@@ -495,15 +524,27 @@ HD2_ADDON_SZ_SRC=D:/WorkBuddyWork/hd2mods/build/_e2e.lua $PY analysis/test_steri
 
 ---
 
-## 11. 未验证 / 待办
+## 11. 实机验证状态
 
-| # | 事项 | 怎么看结果 |
-| --- | --- | --- |
-| 1 | **7 个 Mod 中 6 个还没上机**（只有 #1、#2 实机确认过） | 进任务后看 `%LOCALAPPDATA%\CowboyBingus\Helldivers2\Logs\<mod>_STATUS.txt` 首行 |
-| 2 | **齐射合集包的「管理器勾选 UI」没实测** | 在 Arsenal 里导入后确认能看到两个可勾选项 |
-| 3 | **灭菌器毒气 `+48/+56` 的实际体感属推断** | 没感觉就把 cfg 的 `gas` 调到 `2.000` / `4.000` 再试，`0.5` 即回原版 |
-| 4 | **灭菌器音效是可移植性的赌注** | 首行 `OK - patch applied` ⇒ 内存路线成立；一直 `SEARCHING` + `NO verified ... found` ⇒ 此路不通（转 `hd2-audio-modder` 资源替换） |
-| 5 | **胆汁齐射「6 团一方向叠成一团」是结构限制**（§6） | 不是 bug |
+**7 个 Mod 全部已在真实游戏中上机验证通过（2026-10-16）。**
+
+| # | Mod | 上机结论 |
+| :-: | --- | --- |
+| 1 | 轨道120MM → 飞鹰500kg | ✅ 落点爆炸为 500kg，弹道仍为原版 120mm |
+| 2 | 轨道380MM → 地狱火炸弹 | ✅ 核弹级爆炸生效 |
+| 3 | 胆汁迫击炮 → RL-77 空爆集束 | ✅ 外形仍为原版绿色胆汁，落地炸成空爆 |
+| 4 | 胆汁齐射档位合集（4 / 6 团） | ✅ 两个档位均可勾选，齐射团数正确 |
+| 5 | 迫击哨戒炮 → 凝固汽油弹 | ✅ 落地留下燃烧火海 |
+| 6 | 灭菌器 → G-4 伤害 + 毒气 ×2 | ✅ 伤害与毒气施加量均提升 |
+| 7 | 灭菌器 → 开火音效替换 | ✅ 内存路线成立，音效已替换 |
+
+**仍值得留意的结构性限制**（不是 bug，详见 §6）：
+
+- 胆汁齐射「同一次开火 N 枚」是**同向、会叠在一起** —— 射弹表没有发射散布参数，方向数由游戏固定。
+- 灭菌器的**射程**与**毒气持续时间**改不到；音效只能「换事件」，做不到「放大音量」。
+
+复现验证的方法：进任务后看 `%LOCALAPPDATA%\CowboyBingus\Helldivers2\Logs\<mod>_STATUS.txt`，
+首行应为 `OK - patch applied (revision ...)`。
 
 ---
 
@@ -511,8 +552,6 @@ HD2_ADDON_SZ_SRC=D:/WorkBuddyWork/hd2mods/build/_e2e.lua $PY analysis/test_steri
 
 | 文件 | 内容 |
 | --- | --- |
-| `.workbuddy/memory/MEMORY.md` | **38 条硬约定 + Mod 清单 + 用户偏好**（每次开工前读） |
-| `.workbuddy/memory/2026-*.md` | 逐日工作日志（append-only，记录了每个决策与踩坑的现场） |
 | `HANDOVER.md` | 原始交接与迁移文档（更详尽的工程细节、命令、附录） |
 | `vendor/hd2-lua-mod/SKILL.md` + `references/` | HD2 Lua Mod 技能包：归档格式、打包工具、**6 个实战案例**、踩坑清单 |
 | `vendor/README.md` | 离线数据源的来源与重新获取方法 |

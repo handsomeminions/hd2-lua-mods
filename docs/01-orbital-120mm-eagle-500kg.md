@@ -1,10 +1,10 @@
-> **[轨道120MM高爆弹火力网 → 飞鹰500kg（仅爆炸）](01-orbital-120mm-eagle-500kg.md)**　v1.3.0
+> **[轨道120MM高爆弹火力网 → 飞鹰500kg（仅爆炸）](01-orbital-120mm-eagle-500kg.md)**　v1.3.0　·　**实机** ✅ 已上机验证通过
 >
 > [← 返回总览](../README.md) · [全部 Mod 一览](../README.md#-全部-mod-一览7-个)
 >
-> **安装包** [`dist/Orbital120mm-Eagle500kg.zip`](../dist/Orbital120mm-Eagle500kg.zip)　·　**源码** [`src/orbital_120mm_500kg.lua`](../src/orbital_120mm_500kg.lua)　·　**离线测试** `analysis/test_addon.py`（25/25）
+> **安装包** [`dist/Orbital120mm-Eagle500kg.zip`](../dist/Orbital120mm-Eagle500kg.zip)　·　**源码** [`src/orbital_120mm_500kg.lua`](../src/orbital_120mm_500kg.lua)
 >
-> **Manifest GUID** `a914455b-75f8-4df8-9472-e0fc0bf64464`
+> **离线测试** `analysis/test_addon.py`（25/25）　·　**Manifest GUID** `a914455b-75f8-4df8-9472-e0fc0bf64464`
 
 ---
 
@@ -173,25 +173,6 @@ flight(trajectory/arc/speed/range)_preserved=true  visuals(model/trail/sound)_pr
 | 游戏内无效果，但 STATUS 为 `OK` | 你可能是在**别人的房当客机**——见"联机说明"，需房主侧生效；或确认打的确实是"轨道120MM高爆弹火力网" |
 | 弹道看起来仍不对 | 本版已把弹道改回原版 120mm（速度 400 / 质量 5000 / 阻力 0）。若仍异常，请把 `STATUS.txt` 发回核对 `flight(...)_preserved=true` |
 | 崩溃/异常 | 查看 `orbital_120mm_500kg.log`；本 mod 只做内存读写，异常时请附日志反馈 |
-
----
-
-## 更新记录
-
-- **v1.3.0** —— **按用户要求把弹道改回原版 120mm**。
-  v1.2.x 采用"整条记录克隆"，会把飞行参数（速度 400→500、质量 5000→500、阻力 0→0.5、引信 0→0.8）
-  一起换掉，导致打击弹道/落点偏离原版 120mm（实测会打出原版范围）。
-  本版改为**精准字段改写**：只替换 **爆炸配置**的 4 个字段，弹道/模型/速度/拖尾/飞行音效一律保留原版；
-  并加**逐字节 keep-guard** 从机制上杜绝误改。同时新增**决定性指纹**
-  `audio_trail_event_stop = 3741852184`（全表唯一对应两条 120mm 火力网炮弹，天然排除同名凝固汽油弹）。
-- **v1.2.1** —— 修掉一个**多 addon 共存 bug**：本 mod 与"380mm→地狱火"mod 曾都用通用全局名
-  `end_pass` / `flush_log`，后加载的会覆盖先加载的，导致其中一个的**日志被写丢**。
-  现已改为各自唯一命名（`_HD2_120MM_FLUSH`）并把内部函数全部收为局部。
-- **v1.2.0** —— 实机第二次测试发现：整块内存里**只常驻了射弹表**（`ProjectileSettings`），
-  **轰炸表 `BombardmentComponentData` 根本没加载**。因此新增射弹表路径（当时是整条克隆）。
-- **v1.1.0** —— 修复"实机一直 SEARCHING"（扫描过慢，100 秒才一轮）。分块 1MB、每帧推进、
-  复用读缓冲、日志即时落盘。
-- **v1.0.0** —— 首版：轰炸表 `projectile_types` 改写。
 
 ---
 

@@ -1,10 +1,10 @@
-> **[轨道380MM高爆弹火力网 → 地狱火炸弹](02-orbital-380mm-hellbomb.md)**　v1.0.1
+> **[轨道380MM高爆弹火力网 → 地狱火炸弹](02-orbital-380mm-hellbomb.md)**　v1.0.1　·　**实机** ✅ 已上机验证通过
 >
 > [← 返回总览](../README.md) · [全部 Mod 一览](../README.md#-全部-mod-一览7-个)
 >
-> **安装包** [`dist/Orbital380mm-Hellbomb.zip`](../dist/Orbital380mm-Hellbomb.zip)　·　**源码** [`src/orbital_380mm_hellbomb.lua`](../src/orbital_380mm_hellbomb.lua)　·　**离线测试** `analysis/test_380mm.py`（7/7）
+> **安装包** [`dist/Orbital380mm-Hellbomb.zip`](../dist/Orbital380mm-Hellbomb.zip)　·　**源码** [`src/orbital_380mm_hellbomb.lua`](../src/orbital_380mm_hellbomb.lua)
 >
-> **Manifest GUID** `41d2cdd0-7f8e-4b4d-b54d-c98c36d455c6`
+> **离线测试** `analysis/test_380mm.py`（7/7）　·　**Manifest GUID** `41d2cdd0-7f8e-4b4d-b54d-c98c36d455c6`
 
 ---
 
@@ -99,19 +99,6 @@ STATUS 首行含义：
 
 离线仿真（LuaJIT 2.1 + 假 FFI/假内存）：**功能 2 + 变异 4 = 6/6 通过**（含"关闭解析""写错指纹半径"
 "写错名称哈希""只打一种射弹"四个变异都会被检出），发布正文端到端复测同样 6/6。
-
----
-
-## 更新记录
-
-- **v1.0.1** —— 修复"实机没生效"。根因：爆炸表块尾带**变长数组**（ShakeAssets），
-  导致 `(size-16) % count ≠ 0`，被旧代码的"几何合法性"判据拒绝 → 永远解析不出地狱火。
-  现已改为按**真实记录布局**（stride=152、记录自 payload+16 起）扫描，并用
-  **音频事件哈希 + 粒子哈希**做指纹（跨构建稳定），半径(17/25/45)作交叉校验。
-  另修：两个 addon 曾都用通用全局名 `end_pass/flush_log`，**互相覆盖导致日志丢失**；
-  现已改为各自唯一命名（`_HD2_380MM_FLUSH` / `_HD2_120MM_FLUSH`）。
-  STATUS 新增 `ldld_types=`（已扫到的数据表类型直方图），便于远端排查。
-- **v1.0.0** —— 首版：改 380mm 射弹的 `explosion_type_on_impact`。
 
 ---
 

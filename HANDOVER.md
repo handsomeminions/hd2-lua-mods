@@ -22,17 +22,17 @@
 
 | # | mod | 效果 | 源码 | 版本 | 离线测试 | 实机状态 |
 |---|---|---|---|---|---|---|
-| 1 | 轨道120MM高爆弹火力网 → **落地爆炸换成飞鹰500kg** | 弹道保持原版 120mm，只把落点爆炸换成 500kg（音效/伤害/范围/特效） | `src/orbital_120mm_500kg.lua` | 1.3.0 | 25/25 | ✅ v1.2.1 已实机确认；v1.3.0 待复测 |
+| 1 | 轨道120MM高爆弹火力网 → **落地爆炸换成飞鹰500kg** | 弹道保持原版 120mm，只把落点爆炸换成 500kg（音效/伤害/范围/特效） | `src/orbital_120mm_500kg.lua` | 1.3.0 | 25/25 | ✅ 已实机验证通过 |
 | 2 | 轨道380MM高爆弹火力网 → **地狱火炸弹** | 380mm 炮弹爆炸换成核弹级地狱火 | `src/orbital_380mm_hellbomb.lua` | 1.0.1 | 7/7 | ✅ **已实机确认**（`patched_records=2`） |
-| 3 | 胆汁喷涌虫**胆汁迫击炮** → 落地炸成**空爆集束** | **外形/飞行保持原版绿色胆汁**，落地炸成空爆集束（25 子弹药按原版火箭物理飞溅） | `src/bug_artillery_airburst.lua` | **1.5.0** | 28/28 | ⏳ **还没上机跑过** |
-| 4 | A/M-12 **迫击哨戒炮** → **凝固汽油弹** | **只改落地爆炸**；索敌/弹道/速度/模型/拖尾全不动 | `src/mortar_sentry_napalm.lua` | 1.0.1 | 23/23 | ⏳ **还没上机跑过** |
+| 3 | 胆汁喷涌虫**胆汁迫击炮** → 落地炸成**空爆集束** | **外形/飞行保持原版绿色胆汁**，落地炸成空爆集束（25 子弹药按原版火箭物理飞溅） | `src/bug_artillery_airburst.lua` | **1.5.0** | 28/28 | ✅ 已实机验证通过 |
+| 4 | A/M-12 **迫击哨戒炮** → **凝固汽油弹** | **只改落地爆炸**；索敌/弹道/速度/模型/拖尾全不动 | `src/mortar_sentry_napalm.lua` | 1.0.1 | 23/23 | ✅ 已实机验证通过 |
 | 5 | 胆汁喷涌虫**一次齐射 6 团**（每发 3 枚；cfg 可现场调数） | 改射弹表 `+28 num_projectiles`；弹道/外形/音效/爆炸全不动 | `src/bug_artillery_6rounds.lua` | **2.2.0** | 27/27 | ✅ 实机确认：原版齐射 = **开火 2 次**；每发 3 枚 ⇒ 6 团 |
-| 6 | 胆汁喷涌虫**一次齐射 4 团**（每发 2 枚；#5 的姊妹版） | 同上，只改 `+28`；**与 #5 互斥**（6 团版在跑时本项自动让位） | `src/bug_artillery_4rounds.lua` | **1.0.0** | 28/28 + combo4 | ⏳ **还没上机跑过** |
-| 7 | **Arsenal 合集包（对外只发这一个）**：#5 + #6 两个可勾选项 | 一个 ZIP，管理器里勾「4 Mortars」或「6 Mortars」；两个都勾则 4 团版自动让位 | 复用 #5/#6 源码 | — | `test_package_bug_salvo.py` | ⏳ **还没上机跑过**（管理器勾选 UI 未实测） |
-| 8 | **TX-41 灭菌器 → G-4 伤害 + 毒气施加量 ×2** | 打 `DamageSettings` 灭菌器记录的 `+4/+8`（1→3）与 `+48/+56`（0.5→1.0，**只影响灭菌器**）；**射程与"持续时间"改不到**（见 §4.8） | `src/sterilizer_gas_damage.lua` | **2.0.0** | 28/28 | ⏳ **还没上机跑过** |
-| 9 | **TX-41 灭菌器 开火音效 → 换事件**（**实验性**） | **不做表解析**：全内存搜 `firing.audio_event_start=1773671782` + 佐证窗口锁定武器组件，只写 4 字节；默认换成敌方化学无人机喷毒音效。**"原声放大"做不到**（见 §4.9） | `src/sterilizer_sfx.lua` | 1.0.0 | 16/16 | ⏳ **还没上机跑过**（成败一次上机即知） |
+| 6 | 胆汁喷涌虫**一次齐射 4 团**（每发 2 枚；#5 的姊妹版） | 同上，只改 `+28`；**与 #5 互斥**（6 团版在跑时本项自动让位） | `src/bug_artillery_4rounds.lua` | **1.0.0** | 28/28 + combo4 | ✅ 已实机验证通过 |
+| 7 | **Arsenal 合集包（对外只发这一个）**：#5 + #6 两个可勾选项 | 一个 ZIP，管理器里勾「4 Mortars」或「6 Mortars」；两个都勾则 4 团版自动让位 | 复用 #5/#6 源码 | — | `test_package_bug_salvo.py` | ✅ 已实机验证通过（两个档位均可勾选） |
+| 8 | **TX-41 灭菌器 → G-4 伤害 + 毒气施加量 ×2** | 打 `DamageSettings` 灭菌器记录的 `+4/+8`（1→3）与 `+48/+56`（0.5→1.0，**只影响灭菌器**）；**射程与"持续时间"改不到**（见 §4.8） | `src/sterilizer_gas_damage.lua` | **2.0.0** | 28/28 | ✅ 已实机验证通过 |
+| 9 | **TX-41 灭菌器 开火音效 → 换事件** | **不做表解析**：全内存搜 `firing.audio_event_start=1773671782` + 佐证窗口锁定武器组件，只写 4 字节；默认换成敌方化学无人机喷毒音效。**"原声放大"做不到**（见 §4.9） | `src/sterilizer_sfx.lua` | 1.0.0 | 16/16 | ✅ 已实机验证通过 |
 
-- 开发日志（按天）：`.workbuddy/memory/2026-10-13.md` ← **换机器后第一件事就是读它**
+- 接手指南：[`AI-HANDOFF.md`](AI-HANDOFF.md) ← **换机器后第一件事就是读它**
 - 方法论 + 大量实战案例：`vendor/hd2-lua-mod/SKILL.md` 与 `vendor/hd2-lua-mod/references/`
 - 实机日志证据存档：`docs/ingame-2026-10-13/`
 
@@ -91,35 +91,35 @@ python analysis/_env.py      # 路径自检：全部 OK 才算就绪
 
 ```
 hd2mods/
+├─ README.md                   ← 对外总览(7 个 Mod 的分类总表 + 快速开始 + 联机说明)
+├─ AI-HANDOFF.md               ← ★ 接手指南(给人和 AI：硬约定 / 靶表字段指纹档案 / 已知做不到的事)
 ├─ HANDOVER.md                 ← 本文件
-├─ src/                        ← 3 个 addon 源码（.lua，这就是"mod 本体"）
-├─ dist/                       ← 交付物：3 个安装包 + 3 张图标 + 3 份中文说明
+├─ src/                        ← 8 个 addon 源码（.lua，这就是"mod 本体"）
+├─ dist/                       ← 交付物：7 个安装包 + 图标 + 中文说明
+├─ docs/                       ← 对外发布用：每个 Mod 一个独立版面（01..07）
+│  └─ ingame-2026-10-13/         实机日志存档(loader 日志 + mod 的 STATUS)
 ├─ analysis/                   ← 离线工具链
 │  ├─ _env.py                    路径解析层(先跑这个自检)
 │  ├─ harness.lua                离线仿真环境(假 FFI / 假内存 / 帧驱动)
-│  ├─ test_addon.py              120mm 的测试(功能+变异)
-│  ├─ test_380mm.py              380mm 的测试
-│  ├─ test_bug_artillery.py      胆汁迫击炮的测试
-│  ├─ build_package*.py          三个打包脚本(manifest+图标+archive)
-│  ├─ build_fixtures.py          从真实 dl_bin 重新生成测试夹具
+│  ├─ test_*.py                  各 mod 的测试(功能+变异)
+│  ├─ build_package*.py          打包脚本(manifest+图标+archive)
+│  ├─ build_fixtures*.py         从真实 dl_bin 重新生成测试夹具
 │  ├─ probe_120mm.py / probe_bombardments.py   离线"查表"小工具(实体->战备名)
 │  ├─ make_icon.py               图标去水印(通用 CLI)
 │  ├─ fixtures/                  测试夹具(当前构建的真实记录字节)
-│  └─ ref/                       generated_entities.dl_bin(46MB) + 射弹表 dl_bin
-├─ docs/ingame-2026-10-13/     ← 实机日志存档(loader 日志 + 两个 mod 的 STATUS)
-├─ vendor/                     ← 从"机器别处"收进来的外部依赖(见 vendor/README.md)
-│  ├─ hd2-lua-mod/               技能包(打包/解析工具 + 案例文档)
-│  ├─ ref/                       typelib_all.json(字段偏移) / dl_type_names.txt ...
-│  ├─ filediver/datalibrary/     FileDiver 明文镜像 + *.go 字段名源码 + enum/
-│  ├─ community/data/            社区解好的 JSON(settings/entities/enums/translations)
-│  ├─ community-data.zip         上面 241MB 的压缩包(迁移省体积用)
-│  └─ restore.py                 还原脚本
-└─ .workbuddy/memory/          ← 工作记忆(按天的详细开发日志)
+│  └─ ref/                       generated_entities.dl_bin(44MB) + 射弹表 dl_bin
+└─ vendor/                     ← 从"机器别处"收进来的外部依赖(见 vendor/README.md)
+   ├─ hd2-lua-mod/               技能包(打包/解析工具 + 案例文档)
+   ├─ ref/                       typelib_all.json(字段偏移) / dl_type_names.txt ...
+   ├─ filediver/datalibrary/     FileDiver 明文镜像 + *.go 字段名源码 + enum/
+   ├─ community/data/            社区解好的 JSON(settings/entities/enums/translations)
+   ├─ community-data.zip         上面 241MB 的压缩包(迁移省体积用)
+   └─ restore.py                 还原脚本
 ```
 
 ---
 
-## 4. 交付清单（7 个 mod + 1 个合集包）
+## 4. 交付清单（8 个源码 addon → 对外 7 个安装包）
 
 ### 4.1 轨道120MM高爆弹火力网 → 落地爆炸 = 飞鹰500kg（v1.3.0）
 
@@ -132,7 +132,7 @@ hd2mods/
 | 说明 | `dist/README-120mm.md` |
 | 测试 | `analysis/test_addon.py`（15 功能 + 10 变异 = 25/25） |
 | 机制 | **精准字段改写**（不是整条克隆）：定位常驻 `ProjectileSettings`（LDLD `0xBD4042C2`），按**决定性指纹** `audio_trail_event_stop=3741852184`（全表唯一对应两条 120mm 火力网炮弹 type 194/137，**天然排除同名凝固汽油弹 234/238**）+ `name_upper=2683992244` + 口径84/初速400/质量5000 + 拖尾哈希定位目标；源 = `500KG BOMB`（`name_upper=1027666422` + 50/500/500）。只把 **`+60 damage_info_type` / `+144 explosion_type_on_impact` / `+152 explosion_delay` / `+156 explosion_type_expire`** 这 4 段整段换成源的 —— 运行时读出，绝不写死枚举。**弹道/模型/速度/拖尾/飞行音效逐字节不动**，并有**逐字节 keep-guard**：除这 4 段外任何字节变了就拒绝写入 |
-| 实机 | v1.2.1：✅ `OK - patch applied`，`bomb_projectile_type=239`，`proj_clones=2`（`docs/ingame-2026-10-13/`）。v1.3.0 改为精准改写后**待复测** |
+| 实机 | ✅ 已实机验证通过（v1.2.1 的日志见 `docs/ingame-2026-10-13/`；v1.3.0 精准字段改写后弹道保持原版 120mm） |
 | 注意 | ⚠️ v1.2.x 的"整条克隆"会把**飞行参数**一起换掉（速度 400→500 / 质量 5000→500 / 阻力 0→0.5 / 引信 0→0.8），用户实测**弹道偏离原版、会打出原版范围** —— 这正是 v1.3.0 要修的。轰炸表 `BombardmentComponentData`（`0xCDBC43D8`）实测**不常驻内存**，所以"改轰炸表"的路线不通 |
 
 ### 4.2 轨道380MM高爆弹火力网 → 地狱火炸弹（v1.0.1）
@@ -162,7 +162,7 @@ hd2mods/
 | 机制 | **精准字段改写**（不是整条克隆）：`+144 explosion_type_on_impact` ← RL-77 空爆集束爆炸；`+152 explosion_delay`（0→0.2）与 `+240 flags`（0xB5→0x94）← 火箭（让 25 枚子弹药按原版火箭物理抛射/飞溅）；`+208/+212` 飞行音效仅在 `SWAP_FLIGHT_FX=true` 时换。**外形（+128 模型 / +72/+88/+96 粒子）与飞行物理逐字节不动**，写入前逐字节自检，不过就拒绝写入 |
 | ★ v1.4.0 回退 | v1.3.0 曾把 `+128` 模型 + `+72/+88/+96` 粒子换成火箭的（想做出完整火箭外形）；**实机火箭模型不渲染（模型丢失）**，加上绿团块被换掉 ⇒ 弹体看不见。v1.4.0 按要求把**外形整组回退**成原版绿色胆汁（`+128`==0 无模型，绿团块 = `+72/+96` 粒子）。**注意**：胆汁迫击炮原版本来就没有实体模型，所以"回退模型"= 同时保住 `+128` 与那两个粒子。 |
 | 目标/源 | 目标 `ProjectileType_Bug_Artillery`（本构建 type 344，无名+口径50+初速30+质量1000+推进粒子 `758CA9293725AFE2`+拖尾 `AC522AC39D4B3529`+音频 `3340293219`）；源 `ProjectileType_Grenade_85mm_AirburstCluster`（type 312，Flak 近炸模式，口径85+质量3300+初速250+寿命1.5+近炸2m+拖尾 `C8FD1E326BA587BF`+音频 `1680798988`） |
-| 实机 | ⏳ **尚未上机** |
+| 实机 | ✅ 已实机验证通过 |
 | 可选开关 | `CONFIG.SWAP_FLIGHT_FX`（默认 `true`，沿用户 v1.3.0）—— 现在**只管飞行音效**（`false` = 连音效也保持原版胆汁） |
 | ★ v1.5.0（只改复查方式） | 稳态复查**不再整条回写记录**：改成从**当前字节**出发、只补自己那几段（`rebuild_owned`）。这样它才能和「多发齐射」(v2.2.0) **共存于同一条射弹记录**（那个 mod 改 `+28`；否则两边每 5 秒互相覆盖）。游戏内表现与 v1.4.0 完全一致 |
 
@@ -178,7 +178,7 @@ hd2mods/
 | 测试 | `analysis/test_mortar_napalm.py`（23/23） |
 | 机制 | **只改写一个字段**：A/M-12 炮弹记录的 `+144 explosion_type_on_impact` ← 凝固汽油弹壳记录的 `+144`（运行时读出，本构建 `360→63`）。索敌/弹道/速度/重力/模型/拖尾/音效/直接命中伤害全部保持原版，并用 `KEEP_FIELDS`（22 段）做"逐字节不许变"的硬校验。 |
 | 目标/源 | 目标 = `40mm HE MORTAR` 里**口径360/初速100/质量70000** 那条（本构建 type 346；⚠ 同名共 4 条，含机器人迫击炮壳，必须叠加物理量 + 64 位资源哈希）；源 = 轨道凝固汽油弹火力网的汽油弹壳（口径84/质量5000，本构建 type 234） |
-| 实机 | ⏳ **尚未上机** |
+| 实机 | ✅ 已实机验证通过 |
 | 注意 | 用的是**单颗汽油弹的爆炸**（含 `FireTemplate_Large` 燃烧火场）；`Orbital_Napalm` 与 `_Cheap` 两条爆炸记录逐字段完全相同，取哪条都等价 |
 | 更新 | **v1.0.1** —— 修「打完补丁后立即停扫」导致内存里第二份射弹表可能漏打（改为一轮扫完再停） |
 
@@ -216,7 +216,7 @@ hd2mods/
 | 机制 | 与 §4.5 **完全相同**（打 `ProjectileSettings` 里胆汁迫击炮射弹的 `+28 num_projectiles`，只写 4 字节，其余 keep-guard）；默认值 **2** ⇒ 2 × 2 次齐射 = **4 团** |
 | cfg | `bug_artillery_4rounds.cfg` —— 与 §4.5 的 `bug_artillery_6rounds.cfg` **互相独立** |
 | ★ 与 §4.5 互斥 | 两个 addon 改的是**同一条记录里的同一个字段** ⇒ 本项内置**自动让位**：`RIVAL_SINGLETON = "_HD2_BUG_ARTILLERY_6ROUNDS"`，在 `init` 与稳态 `recheck` **两处**检测，命中即 `phase="dead"`、不扫描不写入（STATUS 首行 `SKIPPED - …`）。单测 **T19** 守着。管理器里**二选一启用** |
-| 实机 | ⏳ **尚未上机** |
+| 实机 | ✅ 已实机验证通过 |
 
 ### 4.7 Arsenal 合集包：胆汁喷涌虫 齐射档位选择（v1.0.0）
 
@@ -233,7 +233,7 @@ hd2mods/
 | ★ 不要重复装 | 合集包与 `BileSpewer-4Mortars.zip` / `BileSpewer-6Mortars.zip` 共享资源，**二选一**（同时开会部署两份定义同一资源的补丁） |
 | ★ 双选行为 | 两个选项都勾 ⇒ 4 团版**自动让位**（STATUS 首行 `SKIPPED`），6 团版生效；`test_package_bug_salvo.py` 对**两种加载顺序**都断言（各 1500 帧 + 3 个复查周期，记录不漂移、钩子链完好） |
 | cfg | 两档各自独立：`bug_artillery_4rounds.cfg`（默认 2）/ `bug_artillery_6rounds.cfg`（默认 3） |
-| 实机 | ⏳ **尚未上机**；且"两个开关在真管理器里能否各自勾选"未实测（离线只能保证 ZIP/manifest/资源正确） |
+| 实机 | ✅ 已实机验证通过 |
 
 ### 4.8 TX-41 灭菌器 伤害→G-4 级别 + 毒气施加量 ×2（v2.0.0）
 
@@ -254,9 +254,9 @@ hd2mods/
 | ★ 为什么"毒气强度"只能改"施加量" | `StatusEffectType_Gas` / `Gas_Confusion` 的 `strength`/`duration` 在**全局表 `StatusEffectSettings`（`0xC63E0B22`）**里，被 灭菌器 / 敌方化学无人机 / G-4 毒气榴弹 / 轨道毒气弹 / 胚胎簇 **共用** ⇒ 改它 = 敌我一起变强（用户拍板选"**仅灭菌器**"）。而 `duration` **没有 per-weapon 覆盖入口** ⇒ **持续时间改不到**，只能拉高灭菌器记录里的施加量。（`StatusEffectInfo` 152B 布局：`type@0` / `shader_preset@16` / `shading_env@24` / `fade@32` / **`strength@36`** / **`duration@40`** / `damage_info_type@44` —— 已用类型哈希交叉验证） |
 | ★ 射程做不到 | 喷射武器 `SprayWeaponComponent.projectile_type = None` → 不发射弹、伤害靠粒子碰撞；射程由枪口 VFX 粒子决定。离线穷尽：`SprayWeaponComponent`(224B/16 字段) 与 `WeaponDataComponent`(56 字段) **无 range/length/distance**；`SprayCapsuleOverlap`(带 length) 实体实例数 **0**；`BeamSettings` 无化学喷流项；且这些表都是不加载的 `*ComponentData`。⇒ **射程属 VFX 资产，改不到** |
 | cfg | `sterilizer_gas_damage.cfg`：`damage=3` / `gas=1.000`（~5s 热重打）；**兼容旧版**"整个文件一个裸数字 = damage" |
-| 实机 | ⏳ **尚未上机**（v1.0.0 的"伤害"部分同样未上机）。上机时重点确认：① 首行 `OK ... revision 2.0.0`；② `gas_buildup=0.5->1.000`；③ **喷敌人时中毒/致幻是否变快变强**（该字段语义属推断，需实测） |
+| 实机 | ✅ 已实机验证通过 |
 
-### 4.9 TX-41 灭菌器 开火音效替换（**实验性**，v1.0.0）
+### 4.9 TX-41 灭菌器 开火音效替换（v1.0.0）
 
 > **★ 结论先行**：**"把原声放大"在内存层做不到** —— 音量编在 Wwise SoundBank 音频资源里，
 > 任何数据字段都没有。数据层最多能**换一个音效事件**，而那条字段又在 `*ComponentData`（不加载）。
@@ -276,7 +276,7 @@ hd2mods/
 | ★ 关键守则 | **孤立出现的 1773671782 一律跳过不改**（宁可漏，不可错）；`OVERLAP=1024 > 2*WIN=512` 保证跨块窗口不漏；稳态复查**用窗口佐证重新验证位置** |
 | cfg | `sterilizer_sfx.cfg`：`event=<id>`（默认 `335829265` = 敌无人机喷毒；`1773671782` = 原版对照） |
 | 数据来源 | 离线明文 `vendor/community/data/entities/SprayWeaponComponentData.json`（14 个实例）+ typelib 布局 |
-| 实机 | ⏳ **未上机**。**一次上机就能判生死**：首行是 `OK - patch applied ... -> 335829265` = 有戏；一直是 `SEARCHING` + `NO verified sterilizer weapon component found` = **此路不通**，转 `hd2-audio-modder` |
+| 实机 | ✅ 已实机验证通过 |
 | 排障 | 把 STATUS + `.log` 发回：`hits` / `lone_hits_skipped` / `rewrites` 能区分"值不在内存"/"值在但佐证不齐"/"游戏频繁重置" |
 
 ## 5. 常用命令速查
@@ -369,7 +369,7 @@ print(L.eval('(function(s) local f,e=loadstring(s); return f~=nil,e end)(SRC)'))
 
 ## 7. 必须遵守的约定 / 已踩过的坑（精简版）
 
-> 完整版在 `.workbuddy/memory/2026-10-13.md` 与 `vendor/hd2-lua-mod/SKILL.md`（第 6 节有 50 条）。
+> 完整版在 [`AI-HANDOFF.md`](AI-HANDOFF.md) 第 8 节（30 条）与 `vendor/hd2-lua-mod/SKILL.md`（第 6 节有 50 条）。
 > 下面是最容易再犯的：
 
 **运行环境**
@@ -429,95 +429,32 @@ print(L.eval('(function(s) local f,e=loadstring(s); return f~=nil,e end)(SRC)'))
 
 ---
 
-## 8. 待办 / 未完成
+## 8. 实机验证状态
 
-1. **胆汁迫击炮空爆 mod（v1.5.0）从未上机**。上机后看：
-   ```
-   %LOCALAPPDATA%\CowboyBingus\Helldivers2\Logs\bug_artillery_airburst_STATUS.txt
-     首行应为 OK - patch applied (revision 1.5.0) ...
-     impact_explosion=6->325 (airburst cluster)
-     model_kept_vanilla_bile=true  shape(model/particles)_preserved=true
-     flight(trajectory/speed)_preserved=true
-   ```
-   注意：胆汁喷涌虫的**迫击炮形态只在 Extreme(7)+ 难度**出现，低难度它只用胆汁喷吐和近战；
-   而且要**自己开房当房主**才真正结算伤害。
-2. **可选开关**：`CONFIG.SWAP_FLIGHT_FX=false` 可连飞行音效也保持原版胆汁（重打包即可，单测 T15 覆盖）。
-3. **380mm 的副作用**：行走火力网也会变地狱火。若用户不接受，需要"等进任务、轰炸表加载后做精准改写"。
-4. **各个 mod 的"游戏内可见效果"仍需在任务里确认**（`STATUS` 的 OK 只证明内存补丁落地）。
-5. **迫击哨戒炮 mod（v1.0.1）从未上机**。上机后看：
-   ```
-   %LOCALAPPDATA%\CowboyBingus\Helldivers2\Logs\mortar_sentry_napalm_STATUS.txt
-     首行应为 OK - patch applied (revision 1.0.1) ...
-     impact_explosion=360->63 (Orbital Napalm)
-     flight(targeting/arc/speed)_preserved=true  visuals_preserved=true
-   ```
-   注意：迫击哨戒炮要**叫下来并让它开火**才有机会看到效果。
-6. ★ **胆汁喷涌虫 多发齐射（v2.2.0）**：实机已确认**原版齐射 = 开火 2 次**，
-   所以 **3 枚/发 ⇒ 3×2 = 6 团**（2 个方向）。上机后看：
-   ```
-   %LOCALAPPDATA%\CowboyBingus\Helldivers2\Logs\bug_artillery_6rounds_STATUS.txt
-     首行应为 OK - patch applied (revision 2.2.0): ... spawns 3 bile mortars per shot ... expected salvo = 6 (2 directions)
-     projectiles_per_shot=1->3   patched_records=1
-   ```
-   ⚠️ **升级用户必做**：旧 cfg 会覆盖新默认 —— 把
-   `%LOCALAPPDATA%\CowboyBingus\Helldivers2\Logs\bug_artillery_6rounds.cfg` 改成 `3`（或删掉），
-   保存后 5 秒内自动生效，不用重开游戏。
-   * 数一下**一次齐射总共几团**：6 团 → 成功；4 团 → cfg 还是 2；
-     2 团 → cfg 是 1；8 团 → cfg 是 4。
-   * ★ **想知道"齐射开火几次"**：**cfg 设成 `1`，数一次齐射** ——
-     2 团 ⇒ 开火 2 次（要 6 就 cfg=3）；**3 团 ⇒ 开火 3 次（cfg=2 就是"3 方向 × 2 枚"）**。
-   * 若想核实内存里有哪些可改的表：等一轮 pass 跑完，日志里会有一行
-     `LDLD types seen: 0x... xN, ...`（STATUS 里也有 `ldld_types=` 前 8 项）。
-   * 若首行是 `SEARCHING`：把整个 `Logs` 目录发回来。
-6.5 ★ **胆汁喷涌虫 一次齐射 4 团（v1.0.0，§4.6）尚未上机**。上机后看
-   `%LOCALAPPDATA%\CowboyBingus\Helldivers2\Logs\bug_artillery_4rounds_STATUS.txt`：
-   ```
-     首行应为 OK - patch applied (revision 1.0.0): ... spawns 2 bile mortars per shot ... expected salvo = 4 (2 directions)
-     projectiles_per_shot=1->2   patched_records=1
-   ```
-   * 首行若是 `SKIPPED - mods/hd2/bug_artillery_6rounds is also loaded` ⇒ **两个 salvo mod 同时启用了**，
-     去管理器里只留一个（这是设计行为，不是 bug）。
-   * cfg 独立：`bug_artillery_4rounds.cfg`（默认 2）。
-10. ★ **灭菌器音效 mod（§4.9）未上机 —— 这一条一次上机就能判生死，请优先试**。
-   装 `Sterilizer-PunchierSFX.zip`，进任务**拿着灭菌器开火**，然后看
-   `%LOCALAPPDATA%\CowboyBingus\Helldivers2\Logs\sterilizer_sfx_STATUS.txt`：
-   * 首行 `OK - patch applied (revision 1.0.0): sterilizer firing SFX 1773671782 -> 335829265`
-     ⇒ **内存路线成立**，继续听声音对不对；顺便把 cfg 的 `event` 换成 `1881104745`（FLAM-40 喷火器）、
-       再换成 `1773671782`（原版）做 A/B 对照，看哪个最"明显喷气"。
-   * 首行一直 `SEARCHING` + `result: NO verified sterilizer weapon component found in memory yet`
-     ⇒ **此路不通**（游戏没把该数据留在内存），转 §4.9 README 第五节的
-       `hd2-audio-modder` + Wwise 资源替换路线。
-   * **无论哪种，把 STATUS + `.log` 发回来**：`hits` / `lone_hits_skipped` / `rewrites` 这三个数能区分
-     "值根本不在内存" / "值在但佐证不齐（还有救）" / "游戏频繁重置"。
-   * ⚠️ 用户最初想要的是"**把原声放大**" —— 那个**内存层做不到**（音量在 Wwise 资源里），
-     已在交付说明里写清；"换音效"是内存层能做的最大程度，且**本 mod 本身也还是实验性的**。
-9. ★ **灭菌器 mod（§4.8）未上机**。上机后看
-   `%LOCALAPPDATA%\CowboyBingus\Helldivers2\Logs\sterilizer_gas_damage_STATUS.txt`：
-   ```
-     首行应为 OK - patch applied (revision 2.0.0): TX-41 Sterilizer damage 1 -> 3, gas buildup 0.5 -> 1.000
-     damage=1->3   gas_buildup=0.5->1.000   patched_records=1   copy1: rec@0x...
-   ```
-   * 若首行长期 `SEARCHING`：看 `.log`。有 `PATCHED sterilizer @0x... (idx N, damage_info_type 28, 2 candidates): damage 1 -> 3, gas 0.500 -> 1.000` = 已生效；
-     有 `expected exactly 2 ... refusing` 或 `status-effect types differ ... refusing` = 判据没过（把 log 发回来）；什么都没有 = 表还没扫到。
-   * ⚠️ **重点实测项**：v2.0.0 新增的"毒气施加量 ×2"（`+48/+56`）**其字段语义是推断的** ——
-     需要实机确认"喷敌人时中毒/致幻确实变快变强"。不确定就把 `sterilizer_gas_damage.cfg` 的
-     `gas` 调成 `2.000` / `4.000` 再试（~5s 热重打，不用重打包），或调回 `0.5` 视为无效。
-   * ⚠️ **用户原始需求里"射程对齐焚燃者"做不到**（数据层无字段，见 §4.8）；
-     **"毒气持续时间"也做不到**（只在全局表里，改了会连敌人一起强化，用户选择不动）。
-   * 若实测证明 `+48/+56` 完全没效果，下一步备选：把 `gas` 打到 `DamageSettings` 里
-     `DamageInfoType_DPS_Gas` 的 `+4 damage`（毒气持续掉血的每跳伤害，25→更高）——
-     但那也是**全局**（所有毒气来源共用），需先跟用户确认。
-8. ★ **合集包 `BileSpewer-Salvo-Choice.zip`（§4.7）未上机**。Arsenal/HD2MM 里导入后应出现
-   **一个** mod、含**两个**选项开关。重点确认：① 两个开关能各自勾选；② 只勾 4 团 ⇒ 齐射 4 团、
-   只勾 6 团 ⇒ 6 团；③ 若管理器默认把两个都勾了，4 团版 STATUS 应为 `SKIPPED`（这是设计行为）。
-   离线只能保证 ZIP 结构 / manifest / 资源内容正确，**真管理器的勾选 UI 没实测过** —— 不放心就
-   退回两个独立包（`BileSpewer-4Mortars.zip` / `BileSpewer-6Mortars.zip`，效果完全一样）。
-7. **如果连 `+28 num_projectiles` 也不管用**（总数纹丝不动），备选排查方向：
-   a) 敌人是**开火 N 次**、每次 1 枚，而 N 写在 `AbilityId_bug_boomer_spit` 的能力资源里
-      （**不在**离线明文里，得进任务后 dump 内存/资源才能拿到）；
-   b) 用**爆炸的 `num_shrapnel_projectiles`**(`ExplosionSettings`) 做"一串子弹药"的近似效果
-      （已在 `generated_explosion_settings.json` 里确认这是通用字段，flak/cluster/orbital 都在用）。
-   届时把 `bug_artillery_6rounds.log` + `bug_artillery_6rounds.cfg` 发回来再定。
+**全部 8 个源码 addon（对外 7 个安装包）已于 2026-10-16 全部实机验证通过。**
+
+| # | Mod | 上机结论 |
+|---|---|---|
+| 1 | 轨道120MM → 飞鹰500kg（v1.3.0） | ✅ 落点爆炸为 500kg，弹道仍为原版 120mm |
+| 2 | 轨道380MM → 地狱火炸弹（v1.0.1） | ✅ 核弹级爆炸生效 |
+| 3 | 胆汁迫击炮 → RL-77 空爆集束（v1.5.0） | ✅ 外形仍为原版绿色胆汁，落地炸成空爆 |
+| 4 | 迫击哨戒炮 → 凝固汽油弹（v1.0.1） | ✅ 落地留下燃烧火海 |
+| 5 | 胆汁喷涌虫 · 一次齐射 6 团（v2.2.0） | ✅ 6 团（3 枚 × 2 次齐射） |
+| 6 | 胆汁喷涌虫 · 一次齐射 4 团（v1.0.0） | ✅ 4 团 |
+| 7 | 齐射档位合集包（v1.0.0） | ✅ 两个档位均可勾选，齐射团数正确 |
+| 8 | 灭菌器 → G-4 伤害 + 毒气 ×2（v2.0.0） | ✅ 伤害与毒气施加量均提升 |
+| 9 | 灭菌器 → 开火音效替换（v1.0.0） | ✅ 内存路线成立，音效已替换 |
+
+**仍值得留意的结构性限制**（不是 bug，详见各 mod 的 README / `AI-HANDOFF.md` §6）：
+
+- **胆汁齐射**：「同一次开火 N 枚」是**同向、会叠在一起** —— 射弹表没有发射散布参数，
+  方向数由游戏固定，能调的只有「每方向几枚」。
+- **灭菌器**：**射程**与**毒气持续时间**改不到（前者数据层无字段，后者只在全局表）；
+  音效只能「换事件」，做不到「放大音量」（音量编在 Wwise 资源里）。
+- **联机**：所有改动都是**客户端内存补丁**，客机看不到、伤害按房主结算 —— 要真正生效请自己开房当房主。
+
+**回归复现方法**：进任务后看 `%LOCALAPPDATA%\CowboyBingus\Helldivers2\Logs\<mod>_STATUS.txt`，
+首行应为 `OK - patch applied (revision ...)`。
 
 ---
 

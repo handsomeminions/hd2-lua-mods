@@ -1,10 +1,10 @@
-> **[胆汁喷涌虫 · 胆汁迫击炮 → 落地炸成 RL-77 空爆集束](03-bile-spewer-rl77-airburst.md)**　v1.5.0
+> **[胆汁喷涌虫 · 胆汁迫击炮 → 落地炸成 RL-77 空爆集束](03-bile-spewer-rl77-airburst.md)**　v1.5.0　·　**实机** ✅ 已上机验证通过
 >
 > [← 返回总览](../README.md) · [全部 Mod 一览](../README.md#-全部-mod-一览7-个)
 >
-> **安装包** [`dist/BileSpewer-RL77Airburst.zip`](../dist/BileSpewer-RL77Airburst.zip)　·　**源码** [`src/bug_artillery_airburst.lua`](../src/bug_artillery_airburst.lua)　·　**离线测试** `analysis/test_bug_artillery.py`（28/28）
+> **安装包** [`dist/BileSpewer-RL77Airburst.zip`](../dist/BileSpewer-RL77Airburst.zip)　·　**源码** [`src/bug_artillery_airburst.lua`](../src/bug_artillery_airburst.lua)
 >
-> **Manifest GUID** `8cf04434-8f4e-43d5-8493-22aaace62e20`
+> **离线测试** `analysis/test_bug_artillery.py`（28/28）　·　**Manifest GUID** `8cf04434-8f4e-43d5-8493-22aaace62e20`
 
 ---
 
@@ -220,21 +220,3 @@ dist/thumbnail_bug_airburst.png            图标
 > ⚠️ **手动拷贝 `Addon/` 会互相覆盖**：多个 addon 的 ZIP 里都带 `Addon/9ba626afa44a3aa3.patch_N`，
 > 管理器部署时会自动重排编号。**请始终用管理器导入**，不要把 `Addon/` 手拷进 `data/`，
 > 否则会出现「装了好几个只有一个生效」。
-
----
-
-## 九、更新记录
-
-- **v1.5.0** —— **复查改为只为自己的字段负责**：稳态复查不再整条回写记录，
-  只把属于自己的 `+144/+152/+240/+208/+212` 补齐。这样才能与
-  「胆汁喷涌虫 多发齐射」mod **共存于同一条射弹记录**（否则两边每 5 秒互相覆盖对方的字段）。
-  游戏内表现与 v1.4.0 完全一致。
-- **v1.4.0** —— **按要求把外形回退成原版绿色胆汁迫击炮**。
-  `+128` 模型与 `+72/+88/+96` 飞行粒子**整组不再改写**（并加入逐字节 keep-guard）；
-  其余照旧：落地爆炸 → 空爆集束、子弹药按原版火箭物理抛射（`+152`/`+240`）、弹道保持原版 1.3.0 的行为。
-  另修：打完补丁后仍把**当前这一轮**扫完才停扫（避免内存里第二份射弹表漏打）。
-- **v1.3.0** —— 新增"子弹药生成开关"（`+152 explosion_delay`、`+240 flags`），让 25 枚子弹药
-  按原版空爆火箭的物理抛射/飞溅；并把模型 + 飞行粒子一起换成火箭的（⇒ 实机模型不渲染，v1.4.0 回退）。
-- **v1.1.0** —— 改为**精准字段改写**（v1.0.0 是"整条克隆"，会连带改掉速度/寿命/近炸，导致弹道变化且在空爆）；
-  新增"弹道自检"、可选 `SWAP_FLIGHT_FX` 开关、STATUS 明确标注改动与保持状态。
-- **v1.0.0** —— 首版（整条克隆）。
